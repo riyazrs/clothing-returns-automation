@@ -1,9 +1,4 @@
 {
   "framework": null,
-  "rewrites": [
-    {
-      "source": "/:path*",
-      "destination": "/docs/:path*"
-    }
-  ]
+  "outputDirectory": "docs"
 }
