@@ -178,17 +178,3 @@
 2026-04-30 13:06:21,925 [ORCHESTRATOR]   Results saved to    : data/Returns_Queue.xlsx
 2026-04-30 13:06:21,925 [ORCHESTRATOR]   Full log at         : returns_log.txt
 2026-04-30 13:06:21,925 [ORCHESTRATOR] ============================================================
-2026-04-30 16:50:37,996 [SINGLE] ============================================================
-2026-04-30 16:50:37,996 [SINGLE] SINGLE SUBMISSION: ORD-1012
-2026-04-30 16:50:37,996 [SINGLE]   Customer: Sean Kelly
-2026-04-30 16:50:37,996 [SINGLE]   Item: Jeans
-2026-04-30 16:50:37,996 [SINGLE]   Purchase Date: 2026-04-30
-2026-04-30 16:50:37,996 [SINGLE]   Hygiene: No, Final Sale: No
-2026-04-30 16:50:37,996 [SINGLE]   Image: submissions/jeans_1777567820.png
-2026-04-30 16:50:37,996 [SINGLE] ============================================================
-2026-04-30 16:50:38,015 [SINGLE] RPA Result: ELIGIBLE FOR AI INSPECTION | Purchase was 0 days ago - within return window
-2026-04-30 16:50:41,405 [SINGLE] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
-2026-04-30 16:50:41,428 [SINGLE] AI Result: REJECT | defect=tear conf=0.97
-2026-04-30 16:50:41,435 [SINGLE] Result appended to /home/runner/work/clothing-returns-automation/clothing-returns-automation/data/Returns_Queue.xlsx
-2026-04-30 16:50:41,435 [SINGLE] Single result written to /home/runner/work/clothing-returns-automation/clothing-returns-automation/docs/latest_submission.json
-2026-04-30 16:50:41,435 [SINGLE] ============================================================
