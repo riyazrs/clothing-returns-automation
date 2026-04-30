@@ -1,4 +1,8 @@
 {
   "framework": null,
-  "outputDirectory": "docs"
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/docs/$1" }
+  ]
 }
