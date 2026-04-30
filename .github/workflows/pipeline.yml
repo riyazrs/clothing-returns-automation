@@ -90,6 +90,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/Returns_Queue.xlsx returns_log.txt docs/results.json data/images/ data/submissions/
+          git add data/Returns_Queue.xlsx returns_log.txt docs/results.json docs/latest_submission.json data/images/ data/submissions/
           git diff --cached --quiet || git commit -m "Pipeline run results - $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
           git push

@@ -80,7 +80,7 @@ def main():
             ai_note = "API key missing - manual review required"
         else:
             import anthropic
-            from agent_inspector import inspect_garment, IMAGES_DIR
+            from agent_inspector import inspect_garment
             client = anthropic.Anthropic(api_key=api_key)
             result = inspect_garment(client, order_id, item_type, image_path)
             ai_decision = result.get("decision", "ESCALATE")
