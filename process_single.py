@@ -66,6 +66,17 @@ def main():
     rpa_status, rpa_note = check_eligibility(order_id, item_type, purchase_date, hygiene, final_sale)
     logging.info(f"RPA Result: {rpa_status} | {rpa_note}")
 
+    # Write intermediate RPA status so frontend can show phase-aware message
+    docs_dir = os.path.join(os.path.dirname(__file__), "docs")
+    os.makedirs(docs_dir, exist_ok=True)
+    with open(os.path.join(docs_dir, "rpa_status.json"), "w") as f:
+        json.dump({
+            "order_id": order_id,
+            "rpa_status": rpa_status,
+            "rpa_note": rpa_note,
+            "timestamp": datetime.utcnow().isoformat() + "Z"
+        }, f)
+
     ai_decision = None
     ai_defect = None
     ai_confidence = None

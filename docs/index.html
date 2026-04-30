@@ -116,6 +116,25 @@
         .actions-row { display: flex; gap: 0.8rem; margin-top: 1.2rem; justify-content: center; flex-wrap: wrap; }
         .divider { border: none; border-top: 1px solid #334155; margin: 1.5rem 0; }
 
+        /* Phase loader */
+        .phase-loader { display: none; background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 1.8rem; margin-top: 1.2rem; text-align: center; }
+        .phase-loader.visible { display: block; }
+        .phase-loader .phase-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.4rem; }
+        .phase-loader .phase-subtitle { font-size: 0.85rem; color: #94a3b8; margin-bottom: 1.2rem; }
+        .spinner { width: 44px; height: 44px; border: 4px solid #334155; border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 1rem; }
+        .spinner.green { border-top-color: #10b981; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .phase-steps { display: flex; justify-content: center; gap: 0; margin-top: 1rem; }
+        .phase-step { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+        .phase-step .dot { width: 12px; height: 12px; border-radius: 50%; background: #334155; }
+        .phase-step .dot.active { background: #3b82f6; }
+        .phase-step .dot.done { background: #10b981; }
+        .phase-step span { font-size: 0.75rem; color: #64748b; }
+        .phase-step span.active { color: #93c5fd; }
+        .phase-step span.done { color: #6ee7b7; }
+        .phase-connector { width: 60px; height: 2px; background: #334155; margin-top: 5px; }
+        .phase-connector.done { background: #10b981; }
+
         @media (max-width: 768px) {
             .form-grid { grid-template-columns: 1fr; }
             .stage-flow { flex-direction: column; }
@@ -222,18 +241,39 @@
 
             <div class="status-bar" id="statusBar"></div>
 
+            <!-- Phase-aware loader -->
+            <div class="phase-loader" id="phaseLoader">
+                <div class="spinner" id="loaderSpinner"></div>
+                <div class="phase-title" id="loaderTitle">Processing your return...</div>
+                <div class="phase-subtitle" id="loaderSubtitle">Please wait</div>
+                <div class="phase-steps">
+                    <div class="phase-step">
+                        <div class="dot" id="dot1"></div>
+                        <span id="step1Label">Submitting</span>
+                    </div>
+                    <div class="phase-connector" id="conn1"></div>
+                    <div class="phase-step">
+                        <div class="dot" id="dot2"></div>
+                        <span id="step2Label">Eligibility Check</span>
+                    </div>
+                    <div class="phase-connector" id="conn2"></div>
+                    <div class="phase-step">
+                        <div class="dot" id="dot3"></div>
+                        <span id="step3Label">Visual Inspection</span>
+                    </div>
+                    <div class="phase-connector" id="conn3"></div>
+                    <div class="phase-step">
+                        <div class="dot" id="dot4"></div>
+                        <span id="step4Label">Done</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Single submission result card -->
             <div class="result-card" id="resultCard">
                 <h3>Submission Result</h3>
                 <div id="resultContent"></div>
             </div>
-        </div>
-
-        <!-- Sample Images Reference -->
-        <div class="section">
-            <h2>Sample Garment Images</h2>
-            <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:0.5rem;">These are the 10 sample images included with the batch pipeline.</p>
-            <div class="images-grid" id="imagesGrid"></div>
         </div>
 
         <!-- All Results -->
@@ -432,31 +472,102 @@ async function runBatchPipeline() {
     }
 }
 
+// ── Phase loader helpers ──
+function showLoader(title, subtitle, phase) {
+    // phase: 1=submitting, 2=rpa, 3=ai, 4=done
+    document.getElementById('phaseLoader').classList.add('visible');
+    document.getElementById('loaderTitle').textContent = title;
+    document.getElementById('loaderSubtitle').textContent = subtitle;
+    document.getElementById('statusBar').style.display = 'none';
+
+    const spinner = document.getElementById('loaderSpinner');
+    spinner.className = phase === 3 ? 'spinner green' : 'spinner';
+
+    const dots = [1,2,3,4];
+    dots.forEach(i => {
+        const dot = document.getElementById(`dot${i}`);
+        const label = document.getElementById(`step${i}Label`);
+        dot.className = 'dot' + (i < phase ? ' done' : i === phase ? ' active' : '');
+        label.className = i < phase ? 'done' : i === phase ? 'active' : '';
+    });
+    [1,2,3].forEach(i => {
+        const conn = document.getElementById(`conn${i}`);
+        conn.className = 'phase-connector' + (i < phase ? ' done' : '');
+    });
+}
+
+function hideLoader() {
+    document.getElementById('phaseLoader').classList.remove('visible');
+    document.getElementById('statusBar').style.display = '';
+}
+
 // ── Poll for single submission result ──
 async function pollForResult() {
-    for (let i = 0; i < 30; i++) {
-        await new Promise(r => setTimeout(r, 10000));
+    showLoader('Uploading & triggering pipeline...', 'Starting GitHub Actions runner', 1);
+    await new Promise(r => setTimeout(r, 30000));
+
+    showLoader('Running eligibility check...', 'RPA bot is verifying your return details', 2);
+
+    const deadline = Date.now() + 3 * 60 * 1000;
+    let rpaDetected = false;
+
+    while (Date.now() < deadline) {
+        // Check if rpa_status.json has been pushed (means RPA is done, AI is running)
+        if (!rpaDetected) {
+            try {
+                const rpaResp = await fetch(
+                    `https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/main/docs/rpa_status.json?t=${Date.now()}`
+                );
+                if (rpaResp.ok) {
+                    const rpaData = await rpaResp.json();
+                    // Only react if this is a fresh run (within last 5 minutes)
+                    const age = Date.now() - new Date(rpaData.timestamp).getTime();
+                    if (age < 5 * 60 * 1000) {
+                        rpaDetected = true;
+                        if (rpaData.rpa_status && rpaData.rpa_status.includes('ELIGIBLE')) {
+                            showLoader(
+                                'You are eligible for returning the product',
+                                'Conducting visual inspection on your product, please wait...',
+                                3
+                            );
+                        } else {
+                            // RPA rejected — still wait for final commit
+                            showLoader('Eligibility check complete', 'Finalising your result...', 3);
+                        }
+                    }
+                }
+            } catch (e) { /* not yet pushed */ }
+        }
+
+        // Check if the workflow run has completed
         try {
-            const resp = await fetch(`https://api.github.com/repos/${REPO.owner}/${REPO.repo}/actions/runs?per_page=1`, {
-                headers: ghHeaders() // No token needed for public repo
-            });
+            const resp = await fetch(
+                `https://api.github.com/repos/${REPO.owner}/${REPO.repo}/actions/runs?per_page=1`,
+                { headers: ghHeaders() }
+            );
             const data = await resp.json();
             const run = data.workflow_runs?.[0];
             if (run && run.status === 'completed') {
                 if (run.conclusion === 'success') {
-                    setStatus('Pipeline complete! Fetching result...', 'success');
-                    await new Promise(r => setTimeout(r, 3000));
+                    showLoader('Visual inspection complete!', 'Fetching your result...', 4);
+                    await new Promise(r => setTimeout(r, 2000));
+                    hideLoader();
+                    setStatus('Pipeline complete!', 'success');
                     await fetchSingleResult();
                     await loadResults();
                 } else {
+                    hideLoader();
                     setStatus(`Pipeline finished with status: ${run.conclusion}. Check the Actions tab.`, 'error');
                 }
                 return;
             }
-            setStatus(`Pipeline running... (check ${i + 1}/30)`, 'running');
         } catch (e) { /* continue */ }
+
+        await new Promise(r => setTimeout(r, 8000));
     }
-    setStatus('Polling timed out. Check GitHub Actions tab.', 'error');
+
+    hideLoader();
+    setStatus('Timed out after 3 minutes. Check GitHub Actions tab for status.', 'error');
 }
 
 async function fetchSingleResult() {
@@ -588,34 +699,7 @@ function switchTab(el, filter) {
     else if (filter === 'rejected') renderTable(allResults.filter(r => r.RPA_Status && !r.RPA_Status.includes('ELIGIBLE')));
 }
 
-// ── Sample images ──
-function renderImages() {
-    const images = [
-        { file: 'jacket_damaged.jpg', label: 'Jacket (Damaged)' },
-        { file: 'jeans_clean.jpg', label: 'Jeans (Clean)' },
-        { file: 'tshirt_stain.jpg', label: 'T-Shirt (Stain)' },
-        { file: 'underwear.jpg', label: 'Underwear (Hygiene)' },
-        { file: 'dress_tear.jpg', label: 'Dress (Tear)' },
-        { file: 'hoodie_clean.jpg', label: 'Hoodie (Clean)' },
-        { file: 'coat_pilling.jpg', label: 'Coat (Pilling)' },
-        { file: 'trousers_clean.jpg', label: 'Trousers (Clean)' },
-        { file: 'swimwear.jpg', label: 'Swimwear (Hygiene)' },
-        { file: 'blazer_missing_button.jpg', label: 'Blazer (Missing Button)' }
-    ];
-    const base = window.location.hostname.includes('github.io')
-        ? `https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/main/data/images/`
-        : '../data/images/';
-    document.getElementById('imagesGrid').innerHTML = images.map(img => `
-        <div class="image-card">
-            <img src="${base}${img.file}" alt="${img.label}"
-                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%22140%22><rect fill=%22%23334155%22 width=%22160%22 height=%22140%22/><text x=%2280%22 y=%2270%22 fill=%22%2364748b%22 text-anchor=%22middle%22 font-size=%2211%22>Not found</text></svg>'">
-            <div class="caption">${img.label}</div>
-        </div>
-    `).join('');
-}
-
 // ── Init ──
-renderImages();
 loadResults();
 
 // Set default purchase date to today
