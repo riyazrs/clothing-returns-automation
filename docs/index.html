@@ -12,8 +12,8 @@
         .header p { color: #94a3b8; margin-top: 0.5rem; font-size: 0.95rem; }
         .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
 
-        .pipeline-section { background: #1e293b; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; border: 1px solid #334155; }
-        .pipeline-section h2 { color: #60a5fa; margin-bottom: 1rem; font-size: 1.3rem; }
+        .section { background: #1e293b; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; border: 1px solid #334155; }
+        .section h2 { color: #60a5fa; margin-bottom: 1rem; font-size: 1.3rem; }
 
         .stage-flow { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; margin: 1.5rem 0; }
         .stage-box { background: #334155; padding: 1rem 1.5rem; border-radius: 8px; text-align: center; min-width: 200px; }
@@ -24,19 +24,49 @@
         .stage-box p { font-size: 0.85rem; color: #cbd5e1; margin-top: 0.3rem; }
         .arrow { color: #475569; font-size: 1.5rem; }
 
+        /* Form styles */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-top: 1rem; }
+        .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group label { font-size: 0.85rem; color: #94a3b8; font-weight: 600; }
+        .form-group input, .form-group select {
+            padding: 0.7rem 1rem; border-radius: 8px; border: 1px solid #475569;
+            background: #0f172a; color: #e2e8f0; font-size: 0.9rem; outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: #3b82f6; }
+
+        /* Drop zone */
+        .drop-zone {
+            border: 2px dashed #475569; border-radius: 12px; padding: 2.5rem; text-align: center;
+            cursor: pointer; transition: all 0.3s; position: relative; min-height: 180px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.8rem;
+        }
+        .drop-zone:hover, .drop-zone.dragover { border-color: #3b82f6; background: #1e3a5f22; }
+        .drop-zone.has-image { border-color: #10b981; border-style: solid; padding: 1rem; }
+        .drop-zone .drop-icon { font-size: 2.5rem; color: #475569; }
+        .drop-zone .drop-text { color: #94a3b8; font-size: 0.9rem; }
+        .drop-zone .drop-subtext { color: #64748b; font-size: 0.8rem; }
+        .drop-zone input[type="file"] { display: none; }
+        .drop-zone .preview-img { max-height: 200px; max-width: 100%; border-radius: 8px; object-fit: contain; }
+        .drop-zone .remove-img {
+            position: absolute; top: 8px; right: 8px; background: #ef4444; color: white;
+            border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer;
+            font-size: 1rem; display: flex; align-items: center; justify-content: center;
+        }
+
         .btn { display: inline-block; padding: 0.8rem 2rem; border-radius: 8px; border: none; font-size: 1rem; cursor: pointer; font-weight: 600; transition: all 0.2s; }
         .btn-primary { background: #3b82f6; color: white; }
         .btn-primary:hover { background: #2563eb; }
         .btn-primary:disabled { background: #475569; cursor: not-allowed; }
         .btn-secondary { background: #334155; color: #e2e8f0; border: 1px solid #475569; }
         .btn-secondary:hover { background: #3b4f6b; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-success:hover { background: #059669; }
 
-        .trigger-area { text-align: center; margin: 1.5rem 0; }
-        .trigger-area p { color: #94a3b8; margin-bottom: 1rem; font-size: 0.9rem; }
-
-        .token-input { display: flex; gap: 0.5rem; max-width: 500px; margin: 1rem auto; }
-        .token-input input { flex: 1; padding: 0.6rem 1rem; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: #e2e8f0; font-size: 0.9rem; }
-        .token-input input::placeholder { color: #64748b; }
+        .token-row { display: flex; gap: 0.5rem; max-width: 500px; margin: 0 auto 1rem; }
+        .token-row input { flex: 1; padding: 0.6rem 1rem; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: #e2e8f0; font-size: 0.9rem; }
+        .token-row input::placeholder { color: #64748b; }
 
         .status-bar { margin-top: 1rem; padding: 0.8rem 1rem; border-radius: 6px; font-size: 0.9rem; display: none; }
         .status-bar.info { background: #1e3a5f; color: #93c5fd; display: block; }
@@ -44,43 +74,50 @@
         .status-bar.error { background: #450a0a; color: #fca5a5; display: block; }
         .status-bar.running { background: #422006; color: #fed7aa; display: block; }
 
-        .results-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
-        .results-table th { background: #334155; padding: 0.7rem; text-align: left; color: #94a3b8; font-weight: 600; position: sticky; top: 0; }
-        .results-table td { padding: 0.7rem; border-bottom: 1px solid #1e293b; }
-        .results-table tr:hover { background: #1e293b; }
+        /* Result card for single submission */
+        .result-card { background: #334155; border-radius: 12px; padding: 1.5rem; margin-top: 1.5rem; display: none; }
+        .result-card.visible { display: block; }
+        .result-card h3 { color: #f8fafc; margin-bottom: 1rem; }
+        .result-row { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #475569; }
+        .result-row:last-child { border-bottom: none; }
+        .result-label { color: #94a3b8; font-size: 0.85rem; }
+        .result-value { font-weight: 600; font-size: 0.9rem; }
 
-        .badge { padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+        .badge { padding: 0.25rem 0.7rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
         .badge-approve { background: #14532d; color: #86efac; }
         .badge-reject { background: #450a0a; color: #fca5a5; }
         .badge-escalate { background: #422006; color: #fed7aa; }
         .badge-eligible { background: #1e3a5f; color: #93c5fd; }
         .badge-rejected-rpa { background: #334155; color: #94a3b8; }
 
-        .images-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; margin-top: 1rem; }
-        .image-card { background: #334155; border-radius: 8px; overflow: hidden; text-align: center; }
-        .image-card img { width: 100%; height: 160px; object-fit: cover; }
-        .image-card .caption { padding: 0.5rem; font-size: 0.8rem; color: #94a3b8; }
+        /* Results table */
+        .results-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
+        .results-table th { background: #334155; padding: 0.7rem; text-align: left; color: #94a3b8; font-weight: 600; position: sticky; top: 0; }
+        .results-table td { padding: 0.7rem; border-bottom: 1px solid #1e293b; }
+        .results-table tr:hover { background: #1e293b; }
+        .table-wrapper { overflow-x: auto; }
 
         .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
         .summary-card { background: #334155; padding: 1.2rem; border-radius: 8px; text-align: center; }
         .summary-card .number { font-size: 2rem; font-weight: 700; }
         .summary-card .label { font-size: 0.8rem; color: #94a3b8; margin-top: 0.3rem; }
-        .num-total { color: #60a5fa; }
-        .num-approved { color: #4ade80; }
-        .num-rejected { color: #f87171; }
-        .num-escalated { color: #fbbf24; }
-        .num-rpa-rejected { color: #94a3b8; }
+        .num-total { color: #60a5fa; } .num-approved { color: #4ade80; }
+        .num-rejected { color: #f87171; } .num-escalated { color: #fbbf24; } .num-rpa-rejected { color: #94a3b8; }
 
-        .tab-bar { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+        .tab-bar { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
         .tab { padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem; background: #334155; color: #94a3b8; border: none; }
         .tab.active { background: #3b82f6; color: white; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
 
-        .table-wrapper { overflow-x: auto; }
-        .log-output { background: #0f172a; padding: 1rem; border-radius: 6px; font-family: monospace; font-size: 0.8rem; max-height: 400px; overflow-y: auto; white-space: pre-wrap; color: #94a3b8; margin-top: 1rem; }
+        .images-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .image-card { background: #334155; border-radius: 8px; overflow: hidden; text-align: center; }
+        .image-card img { width: 100%; height: 140px; object-fit: cover; }
+        .image-card .caption { padding: 0.4rem; font-size: 0.75rem; color: #94a3b8; }
+
+        .actions-row { display: flex; gap: 0.8rem; margin-top: 1.2rem; justify-content: center; flex-wrap: wrap; }
+        .divider { border: none; border-top: 1px solid #334155; margin: 1.5rem 0; }
 
         @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
             .stage-flow { flex-direction: column; }
             .arrow { transform: rotate(90deg); }
             .summary-cards { grid-template-columns: repeat(2, 1fr); }
@@ -95,7 +132,7 @@
 
     <div class="container">
         <!-- Pipeline Overview -->
-        <div class="pipeline-section">
+        <div class="section">
             <h2>Pipeline Architecture</h2>
             <div class="stage-flow">
                 <div class="stage-box rpa">
@@ -115,31 +152,97 @@
             </div>
         </div>
 
-        <!-- Trigger Pipeline -->
-        <div class="pipeline-section">
-            <h2>Run Pipeline</h2>
-            <div class="trigger-area">
-                <p>Trigger the pipeline via GitHub Actions. You need a GitHub personal access token with <code>repo</code> and <code>workflow</code> scopes.</p>
-                <div class="token-input">
-                    <input type="password" id="ghToken" placeholder="GitHub Personal Access Token (ghp_...)">
+        <!-- Submit a Return -->
+        <div class="section">
+            <h2>Submit a Return for Validation</h2>
+            <p style="color:#94a3b8; font-size:0.9rem; margin-bottom:0.5rem;">
+                Fill in the product details and drop a garment image. The pipeline will run through GitHub Actions and return the result.
+            </p>
+
+            <div class="token-row">
+                <input type="password" id="ghToken" placeholder="GitHub Personal Access Token (ghp_...) - repo & workflow scopes">
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Customer Name</label>
+                    <input type="text" id="customerName" placeholder="e.g. Jane Smith">
                 </div>
-                <div style="margin-top: 1rem;">
-                    <button class="btn btn-primary" id="triggerBtn" onclick="triggerPipeline()">Run Pipeline</button>
-                    <button class="btn btn-secondary" style="margin-left: 0.5rem;" onclick="loadResults()">Refresh Results</button>
+                <div class="form-group">
+                    <label>Item Type</label>
+                    <select id="itemType">
+                        <option value="">-- Select --</option>
+                        <option>Jacket</option>
+                        <option>Jeans</option>
+                        <option>T-Shirt</option>
+                        <option>Dress</option>
+                        <option>Hoodie</option>
+                        <option>Winter Coat</option>
+                        <option>Trousers</option>
+                        <option>Blazer</option>
+                        <option>Skirt</option>
+                        <option>Shirt</option>
+                        <option>Underwear</option>
+                        <option>Swimwear</option>
+                        <option>Socks</option>
+                    </select>
                 </div>
-                <div class="status-bar" id="statusBar"></div>
+                <div class="form-group">
+                    <label>Purchase Date</label>
+                    <input type="date" id="purchaseDate">
+                </div>
+                <div class="form-group">
+                    <label>Hygiene Item?</label>
+                    <select id="hygieneFlag">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Final Sale?</label>
+                    <select id="finalSale">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+
+                <!-- Drop Zone -->
+                <div class="form-group full-width">
+                    <label>Garment Image</label>
+                    <div class="drop-zone" id="dropZone">
+                        <div class="drop-icon">&#128247;</div>
+                        <div class="drop-text">Drag and drop a garment image here</div>
+                        <div class="drop-subtext">or click to browse (JPG, PNG - max 5MB)</div>
+                        <input type="file" id="fileInput" accept="image/jpeg,image/png">
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions-row">
+                <button class="btn btn-success" id="submitBtn" onclick="submitReturn()">Submit Return</button>
+                <button class="btn btn-secondary" onclick="runBatchPipeline()">Run Full Batch Pipeline</button>
+                <button class="btn btn-secondary" onclick="loadResults()">Refresh Results</button>
+            </div>
+
+            <div class="status-bar" id="statusBar"></div>
+
+            <!-- Single submission result card -->
+            <div class="result-card" id="resultCard">
+                <h3>Submission Result</h3>
+                <div id="resultContent"></div>
             </div>
         </div>
 
-        <!-- Sample Images -->
-        <div class="pipeline-section">
-            <h2>Garment Images (Sample Data)</h2>
+        <!-- Sample Images Reference -->
+        <div class="section">
+            <h2>Sample Garment Images</h2>
+            <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:0.5rem;">These are the 10 sample images included with the batch pipeline.</p>
             <div class="images-grid" id="imagesGrid"></div>
         </div>
 
-        <!-- Results -->
-        <div class="pipeline-section">
-            <h2>Pipeline Results</h2>
+        <!-- All Results -->
+        <div class="section">
+            <h2>All Pipeline Results</h2>
             <div class="summary-cards" id="summaryCards" style="display:none;">
                 <div class="summary-card"><div class="number num-total" id="totalCount">0</div><div class="label">Total Processed</div></div>
                 <div class="summary-card"><div class="number num-rpa-rejected" id="rpaRejCount">0</div><div class="label">RPA Rejected</div></div>
@@ -149,224 +252,393 @@
             </div>
 
             <div class="tab-bar">
-                <button class="tab active" onclick="switchTab('all')">All Results</button>
-                <button class="tab" onclick="switchTab('eligible')">AI Inspected</button>
-                <button class="tab" onclick="switchTab('rejected')">RPA Rejected</button>
+                <button class="tab active" onclick="switchTab(this, 'all')">All Results</button>
+                <button class="tab" onclick="switchTab(this, 'eligible')">AI Inspected</button>
+                <button class="tab" onclick="switchTab(this, 'rejected')">RPA Rejected</button>
             </div>
 
             <div class="table-wrapper">
-                <table class="results-table" id="resultsTable">
+                <table class="results-table">
                     <thead>
                         <tr>
-                            <th>Order ID</th>
-                            <th>Customer</th>
-                            <th>Item</th>
-                            <th>Purchase Date</th>
-                            <th>RPA Status</th>
-                            <th>AI Decision</th>
-                            <th>Defect</th>
-                            <th>Confidence</th>
-                            <th>Notes</th>
+                            <th>Order ID</th><th>Customer</th><th>Item</th><th>Purchase Date</th>
+                            <th>RPA Status</th><th>AI Decision</th><th>Defect</th><th>Confidence</th><th>Notes</th>
                         </tr>
                     </thead>
                     <tbody id="resultsBody">
-                        <tr><td colspan="9" style="text-align:center; color:#64748b; padding:2rem;">No results yet. Run the pipeline or click Refresh Results.</td></tr>
+                        <tr><td colspan="9" style="text-align:center; color:#64748b; padding:2rem;">No results yet. Submit a return or run the batch pipeline.</td></tr>
                     </tbody>
                 </table>
             </div>
-
             <div id="lastUpdated" style="margin-top:1rem; font-size:0.8rem; color:#64748b;"></div>
         </div>
     </div>
 
-    <script>
-        // Auto-detect repo info from the URL
-        function getRepoInfo() {
-            const host = window.location.hostname;
-            const path = window.location.pathname;
-            if (host.endsWith('.github.io')) {
-                const owner = host.replace('.github.io', '');
-                const repo = path.split('/')[1] || '';
-                return { owner, repo };
-            }
-            return { owner: '', repo: '' };
+<script>
+// ── Repo detection ──
+function getRepoInfo() {
+    const host = window.location.hostname;
+    const path = window.location.pathname;
+    if (host.endsWith('.github.io')) {
+        const owner = host.replace('.github.io', '');
+        const repo = path.split('/').filter(Boolean)[0] || '';
+        return { owner, repo };
+    }
+    return { owner: '', repo: '' };
+}
+const REPO = getRepoInfo();
+
+function ghHeaders(token) {
+    return { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' };
+}
+
+// ── Status bar ──
+function setStatus(msg, type) {
+    const bar = document.getElementById('statusBar');
+    bar.className = 'status-bar ' + type;
+    bar.textContent = msg;
+}
+
+// ── Drop zone logic ──
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+let selectedFile = null;
+let selectedFileBase64 = null;
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+});
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+
+function handleFile(file) {
+    if (!file.type.match(/^image\/(jpeg|png)$/)) {
+        setStatus('Please upload a JPG or PNG image.', 'error');
+        return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+        setStatus('Image must be under 5MB.', 'error');
+        return;
+    }
+    selectedFile = file;
+    const reader = new FileReader();
+    reader.onload = e => {
+        selectedFileBase64 = e.target.result.split(',')[1]; // strip data:... prefix
+        dropZone.classList.add('has-image');
+        dropZone.innerHTML = `
+            <button class="remove-img" onclick="removeImage(event)">&times;</button>
+            <img class="preview-img" src="${e.target.result}" alt="Preview">
+            <div class="drop-text" style="margin-top:0.5rem;">${file.name} (${(file.size/1024).toFixed(0)} KB)</div>
+        `;
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeImage(e) {
+    e.stopPropagation();
+    selectedFile = null;
+    selectedFileBase64 = null;
+    dropZone.classList.remove('has-image');
+    dropZone.innerHTML = `
+        <div class="drop-icon">&#128247;</div>
+        <div class="drop-text">Drag and drop a garment image here</div>
+        <div class="drop-subtext">or click to browse (JPG, PNG - max 5MB)</div>
+        <input type="file" id="fileInput" accept="image/jpeg,image/png">
+    `;
+    // Rebind
+    const newInput = document.getElementById('fileInput');
+    newInput.addEventListener('change', () => { if (newInput.files[0]) handleFile(newInput.files[0]); });
+}
+
+// ── Upload image to repo via GitHub API ──
+async function uploadImageToRepo(token, filename, base64Data) {
+    const path = `data/submissions/${filename}`;
+    const url = `https://api.github.com/repos/${REPO.owner}/${REPO.repo}/contents/${path}`;
+
+    // Check if file already exists (to get sha for update)
+    let sha = null;
+    try {
+        const existing = await fetch(url, { headers: ghHeaders(token) });
+        if (existing.ok) {
+            const data = await existing.json();
+            sha = data.sha;
         }
+    } catch (e) { /* file doesn't exist, that's fine */ }
 
-        const REPO = getRepoInfo();
-        const IMAGES = [
-            { file: 'jacket_damaged.jpg', label: 'Jacket (Damaged)' },
-            { file: 'jeans_clean.jpg', label: 'Jeans (Clean)' },
-            { file: 'tshirt_stain.jpg', label: 'T-Shirt (Stain)' },
-            { file: 'underwear.jpg', label: 'Underwear (Hygiene)' },
-            { file: 'dress_tear.jpg', label: 'Dress (Tear)' },
-            { file: 'hoodie_clean.jpg', label: 'Hoodie (Clean)' },
-            { file: 'coat_pilling.jpg', label: 'Coat (Pilling)' },
-            { file: 'trousers_clean.jpg', label: 'Trousers (Clean)' },
-            { file: 'swimwear.jpg', label: 'Swimwear (Hygiene)' },
-            { file: 'blazer_missing_button.jpg', label: 'Blazer (Missing Button)' }
-        ];
+    const body = {
+        message: `Upload garment image: ${filename}`,
+        content: base64Data
+    };
+    if (sha) body.sha = sha;
 
-        // Render images
-        function renderImages() {
-            const grid = document.getElementById('imagesGrid');
-            // Try relative path from docs/ to data/images/
-            const basePath = window.location.hostname.includes('github.io')
-                ? `/${REPO.repo}/data/images/`
-                : '../data/images/';
-            grid.innerHTML = IMAGES.map(img => `
-                <div class="image-card">
-                    <img src="${basePath}${img.file}" alt="${img.label}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22180%22 height=%22160%22><rect fill=%22%23334155%22 width=%22180%22 height=%22160%22/><text x=%2290%22 y=%2280%22 fill=%22%2364748b%22 text-anchor=%22middle%22 font-size=%2212%22>Image not found</text></svg>'">
-                    <div class="caption">${img.label}</div>
-                </div>
-            `).join('');
-        }
+    const resp = await fetch(url, {
+        method: 'PUT',
+        headers: { ...ghHeaders(token), 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    });
 
-        function setStatus(msg, type) {
-            const bar = document.getElementById('statusBar');
-            bar.className = 'status-bar ' + type;
-            bar.textContent = msg;
-        }
+    if (!resp.ok) {
+        const err = await resp.json();
+        throw new Error(err.message || 'Failed to upload image');
+    }
+    return filename;
+}
 
-        async function triggerPipeline() {
-            const token = document.getElementById('ghToken').value.trim();
-            if (!token) { setStatus('Please enter a GitHub token.', 'error'); return; }
-            if (!REPO.owner || !REPO.repo) { setStatus('Could not detect repo from URL. Are you on GitHub Pages?', 'error'); return; }
+// ── Submit single return ──
+async function submitReturn() {
+    const token = document.getElementById('ghToken').value.trim();
+    const customer = document.getElementById('customerName').value.trim();
+    const itemType = document.getElementById('itemType').value;
+    const purchaseDate = document.getElementById('purchaseDate').value;
+    const hygiene = document.getElementById('hygieneFlag').value;
+    const finalSale = document.getElementById('finalSale').value;
 
-            const btn = document.getElementById('triggerBtn');
-            btn.disabled = true;
-            btn.textContent = 'Triggering...';
-            setStatus('Dispatching workflow...', 'info');
+    if (!token) { setStatus('Please enter your GitHub token.', 'error'); return; }
+    if (!REPO.owner || !REPO.repo) { setStatus('Could not detect repo. Are you on GitHub Pages?', 'error'); return; }
+    if (!customer || !itemType || !purchaseDate) { setStatus('Please fill in Customer Name, Item Type, and Purchase Date.', 'error'); return; }
+    if (!selectedFile) { setStatus('Please upload a garment image.', 'error'); return; }
 
-            try {
-                const resp = await fetch(`https://api.github.com/repos/${REPO.owner}/${REPO.repo}/actions/workflows/pipeline.yml/dispatches`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `token ${token}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    },
-                    body: JSON.stringify({ ref: 'main' })
-                });
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
 
-                if (resp.status === 204) {
-                    setStatus('Pipeline triggered! It takes 1-2 minutes to complete. Click "Refresh Results" after it finishes.', 'success');
-                    pollWorkflow(token);
-                } else {
-                    const err = await resp.json();
-                    setStatus(`Failed: ${err.message || resp.statusText}`, 'error');
+    try {
+        // Step 1: Upload image to repo
+        const ts = Date.now();
+        const ext = selectedFile.name.split('.').pop();
+        const safeItem = itemType.toLowerCase().replace(/[^a-z0-9]/g, '_');
+        const imageFilename = `${safeItem}_${ts}.${ext}`;
+
+        setStatus('Uploading image to repository...', 'info');
+        await uploadImageToRepo(token, imageFilename, selectedFileBase64);
+
+        // Step 2: Trigger workflow with inputs
+        setStatus('Triggering pipeline...', 'info');
+        const resp = await fetch(`https://api.github.com/repos/${REPO.owner}/${REPO.repo}/actions/workflows/pipeline.yml/dispatches`, {
+            method: 'POST',
+            headers: { ...ghHeaders(token), 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                ref: 'main',
+                inputs: {
+                    mode: 'single',
+                    customer_name: customer,
+                    item_type: itemType,
+                    purchase_date: purchaseDate,
+                    hygiene_item: hygiene,
+                    final_sale: finalSale,
+                    image_filename: imageFilename
                 }
-            } catch (e) {
-                setStatus(`Error: ${e.message}`, 'error');
-            }
-            btn.disabled = false;
-            btn.textContent = 'Run Pipeline';
+            })
+        });
+
+        if (resp.status === 204) {
+            setStatus('Submitted! Pipeline is running... polling for results (this may take 1-2 minutes).', 'running');
+            pollForResult(token);
+        } else {
+            const err = await resp.json();
+            setStatus(`Failed to trigger pipeline: ${err.message || resp.statusText}`, 'error');
         }
+    } catch (e) {
+        setStatus(`Error: ${e.message}`, 'error');
+    }
 
-        async function pollWorkflow(token) {
-            setStatus('Pipeline running... checking status...', 'running');
-            const maxAttempts = 30;
-            for (let i = 0; i < maxAttempts; i++) {
-                await new Promise(r => setTimeout(r, 10000));
-                try {
-                    const resp = await fetch(`https://api.github.com/repos/${REPO.owner}/${REPO.repo}/actions/runs?per_page=1`, {
-                        headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
-                    });
-                    const data = await resp.json();
-                    const run = data.workflow_runs?.[0];
-                    if (run && run.status === 'completed') {
-                        if (run.conclusion === 'success') {
-                            setStatus('Pipeline completed successfully! Loading results...', 'success');
-                            setTimeout(() => loadResults(), 3000);
-                        } else {
-                            setStatus(`Pipeline finished with status: ${run.conclusion}. Check Actions tab for details.`, 'error');
-                        }
-                        return;
-                    }
-                    setStatus(`Pipeline running... (check ${i+1}/${maxAttempts})`, 'running');
-                } catch (e) { /* continue polling */ }
-            }
-            setStatus('Polling timed out. Check GitHub Actions tab for status.', 'error');
-        }
+    btn.disabled = false;
+    btn.textContent = 'Submit Return';
+}
 
-        async function loadResults() {
-            try {
-                const basePath = window.location.hostname.includes('github.io')
-                    ? `/${REPO.repo}/docs/results.json`
-                    : 'results.json';
-                const resp = await fetch(basePath + '?t=' + Date.now());
-                if (!resp.ok) { setStatus('No results file found yet. Run the pipeline first.', 'info'); return; }
-                const data = await resp.json();
-                renderResults(data);
-            } catch (e) {
-                setStatus('Could not load results: ' + e.message, 'error');
-            }
-        }
-
-        let allResults = [];
-        function renderResults(data) {
-            allResults = data.results;
-            document.getElementById('lastUpdated').textContent = `Last pipeline run: ${new Date(data.timestamp).toLocaleString()}`;
-
-            // Summary
-            const total = allResults.length;
-            const rpaRej = allResults.filter(r => r.RPA_Status && !r.RPA_Status.includes('ELIGIBLE')).length;
-            const approved = allResults.filter(r => r.AI_Decision === 'AUTO_APPROVE').length;
-            const rejected = allResults.filter(r => r.AI_Decision === 'REJECT').length;
-            const escalated = allResults.filter(r => r.AI_Decision === 'ESCALATE').length;
-
-            document.getElementById('summaryCards').style.display = 'grid';
-            document.getElementById('totalCount').textContent = total;
-            document.getElementById('rpaRejCount').textContent = rpaRej;
-            document.getElementById('approvedCount').textContent = approved;
-            document.getElementById('rejectedCount').textContent = rejected;
-            document.getElementById('escalatedCount').textContent = escalated;
-
-            renderTable(allResults);
-        }
-
-        function renderTable(rows) {
-            const tbody = document.getElementById('resultsBody');
-            if (!rows.length) {
-                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#64748b;padding:2rem;">No data</td></tr>';
+// ── Poll for single submission result ──
+async function pollForResult(token) {
+    for (let i = 0; i < 30; i++) {
+        await new Promise(r => setTimeout(r, 10000));
+        try {
+            const resp = await fetch(`https://api.github.com/repos/${REPO.owner}/${REPO.repo}/actions/runs?per_page=1`, {
+                headers: ghHeaders(token)
+            });
+            const data = await resp.json();
+            const run = data.workflow_runs?.[0];
+            if (run && run.status === 'completed') {
+                if (run.conclusion === 'success') {
+                    setStatus('Pipeline complete! Fetching result...', 'success');
+                    await new Promise(r => setTimeout(r, 3000));
+                    await fetchSingleResult(token);
+                    await loadResults();
+                } else {
+                    setStatus(`Pipeline finished with status: ${run.conclusion}. Check the Actions tab.`, 'error');
+                }
                 return;
             }
-            tbody.innerHTML = rows.map(r => `<tr>
-                <td><strong>${r.Order_ID || ''}</strong></td>
-                <td>${r.Customer_Name || ''}</td>
-                <td>${r.Item_Type || ''}</td>
-                <td>${r.Purchase_Date || ''}</td>
-                <td>${rpaBadge(r.RPA_Status)}</td>
-                <td>${aiBadge(r.AI_Decision)}</td>
-                <td>${r.AI_Defect || '-'}</td>
-                <td>${r.AI_Confidence != null ? Number(r.AI_Confidence).toFixed(2) : '-'}</td>
-                <td style="max-width:200px;font-size:0.8rem;color:#94a3b8;">${r.Notes || ''}</td>
-            </tr>`).join('');
-        }
+            setStatus(`Pipeline running... (check ${i + 1}/30)`, 'running');
+        } catch (e) { /* continue */ }
+    }
+    setStatus('Polling timed out. Check GitHub Actions tab.', 'error');
+}
 
-        function rpaBadge(status) {
-            if (!status) return '-';
-            if (status.includes('ELIGIBLE')) return `<span class="badge badge-eligible">${status}</span>`;
-            return `<span class="badge badge-rejected-rpa">${status}</span>`;
-        }
+async function fetchSingleResult(token) {
+    try {
+        const url = `https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/main/docs/latest_submission.json`;
+        const resp = await fetch(url + '?t=' + Date.now());
+        if (!resp.ok) return;
+        const r = await resp.json();
+        showResultCard(r);
+    } catch (e) { /* ignore */ }
+}
 
-        function aiBadge(decision) {
-            if (!decision) return '-';
-            if (decision === 'AUTO_APPROVE') return `<span class="badge badge-approve">AUTO_APPROVE</span>`;
-            if (decision === 'REJECT') return `<span class="badge badge-reject">REJECT</span>`;
-            if (decision === 'ESCALATE') return `<span class="badge badge-escalate">ESCALATE</span>`;
-            return decision;
-        }
+function showResultCard(r) {
+    const card = document.getElementById('resultCard');
+    card.classList.add('visible');
+    document.getElementById('resultContent').innerHTML = `
+        <div class="result-row"><span class="result-label">Order ID</span><span class="result-value">${r.order_id}</span></div>
+        <div class="result-row"><span class="result-label">Customer</span><span class="result-value">${r.customer_name}</span></div>
+        <div class="result-row"><span class="result-label">Item</span><span class="result-value">${r.item_type}</span></div>
+        <div class="result-row"><span class="result-label">Purchase Date</span><span class="result-value">${r.purchase_date}</span></div>
+        <div class="result-row"><span class="result-label">RPA Status</span><span class="result-value">${rpaBadge(r.rpa_status)}</span></div>
+        <div class="result-row"><span class="result-label">RPA Note</span><span class="result-value" style="font-weight:400;color:#94a3b8;">${r.rpa_note || '-'}</span></div>
+        ${r.ai_decision ? `
+        <hr class="divider" style="margin:0.8rem 0;">
+        <div class="result-row"><span class="result-label">AI Decision</span><span class="result-value">${aiBadge(r.ai_decision)}</span></div>
+        <div class="result-row"><span class="result-label">Defect Detected</span><span class="result-value">${r.ai_defect || '-'}</span></div>
+        <div class="result-row"><span class="result-label">Confidence</span><span class="result-value">${r.ai_confidence != null ? Number(r.ai_confidence).toFixed(2) : '-'}</span></div>
+        <div class="result-row"><span class="result-label">AI Reasoning</span><span class="result-value" style="font-weight:400;color:#94a3b8;">${r.ai_reasoning || '-'}</span></div>
+        ` : ''}
+        <div class="result-row"><span class="result-label">Processed At</span><span class="result-value" style="font-weight:400;color:#64748b;">${new Date(r.timestamp).toLocaleString()}</span></div>
+    `;
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
 
-        function switchTab(filter) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            if (filter === 'all') renderTable(allResults);
-            else if (filter === 'eligible') renderTable(allResults.filter(r => r.RPA_Status && r.RPA_Status.includes('ELIGIBLE')));
-            else if (filter === 'rejected') renderTable(allResults.filter(r => r.RPA_Status && !r.RPA_Status.includes('ELIGIBLE')));
-        }
+// ── Batch pipeline ──
+async function runBatchPipeline() {
+    const token = document.getElementById('ghToken').value.trim();
+    if (!token) { setStatus('Please enter a GitHub token.', 'error'); return; }
+    if (!REPO.owner || !REPO.repo) { setStatus('Could not detect repo.', 'error'); return; }
 
-        // Init
-        renderImages();
-        loadResults();
-    </script>
+    setStatus('Triggering batch pipeline...', 'info');
+    try {
+        const resp = await fetch(`https://api.github.com/repos/${REPO.owner}/${REPO.repo}/actions/workflows/pipeline.yml/dispatches`, {
+            method: 'POST',
+            headers: { ...ghHeaders(token), 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ref: 'main', inputs: { mode: 'batch' } })
+        });
+        if (resp.status === 204) {
+            setStatus('Batch pipeline triggered! Polling for completion...', 'running');
+            pollForResult(token);
+        } else {
+            const err = await resp.json();
+            setStatus(`Failed: ${err.message || resp.statusText}`, 'error');
+        }
+    } catch (e) {
+        setStatus(`Error: ${e.message}`, 'error');
+    }
+}
+
+// ── Load all results ──
+async function loadResults() {
+    try {
+        const url = window.location.hostname.includes('github.io')
+            ? `https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/main/docs/results.json`
+            : 'results.json';
+        const resp = await fetch(url + '?t=' + Date.now());
+        if (!resp.ok) { setStatus('No results file yet. Run the pipeline first.', 'info'); return; }
+        const data = await resp.json();
+        renderResults(data);
+    } catch (e) {
+        setStatus('Could not load results: ' + e.message, 'error');
+    }
+}
+
+let allResults = [];
+function renderResults(data) {
+    allResults = data.results;
+    document.getElementById('lastUpdated').textContent = `Last pipeline run: ${new Date(data.timestamp).toLocaleString()}`;
+
+    const total = allResults.length;
+    const rpaRej = allResults.filter(r => r.RPA_Status && !r.RPA_Status.includes('ELIGIBLE')).length;
+    const approved = allResults.filter(r => r.AI_Decision === 'AUTO_APPROVE').length;
+    const rejected = allResults.filter(r => r.AI_Decision === 'REJECT').length;
+    const escalated = allResults.filter(r => r.AI_Decision === 'ESCALATE').length;
+
+    document.getElementById('summaryCards').style.display = 'grid';
+    document.getElementById('totalCount').textContent = total;
+    document.getElementById('rpaRejCount').textContent = rpaRej;
+    document.getElementById('approvedCount').textContent = approved;
+    document.getElementById('rejectedCount').textContent = rejected;
+    document.getElementById('escalatedCount').textContent = escalated;
+    renderTable(allResults);
+}
+
+function renderTable(rows) {
+    const tbody = document.getElementById('resultsBody');
+    if (!rows.length) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#64748b;padding:2rem;">No data</td></tr>'; return; }
+    tbody.innerHTML = rows.map(r => `<tr>
+        <td><strong>${r.Order_ID || ''}</strong></td>
+        <td>${r.Customer_Name || ''}</td>
+        <td>${r.Item_Type || ''}</td>
+        <td>${r.Purchase_Date || ''}</td>
+        <td>${rpaBadge(r.RPA_Status)}</td>
+        <td>${aiBadge(r.AI_Decision)}</td>
+        <td>${r.AI_Defect || '-'}</td>
+        <td>${r.AI_Confidence != null ? Number(r.AI_Confidence).toFixed(2) : '-'}</td>
+        <td style="max-width:200px;font-size:0.8rem;color:#94a3b8;">${r.Notes || ''}</td>
+    </tr>`).join('');
+}
+
+function rpaBadge(s) {
+    if (!s) return '-';
+    if (s.includes('ELIGIBLE')) return `<span class="badge badge-eligible">${s}</span>`;
+    return `<span class="badge badge-rejected-rpa">${s}</span>`;
+}
+function aiBadge(d) {
+    if (!d) return '-';
+    if (d === 'AUTO_APPROVE') return `<span class="badge badge-approve">AUTO_APPROVE</span>`;
+    if (d === 'REJECT') return `<span class="badge badge-reject">REJECT</span>`;
+    if (d === 'ESCALATE') return `<span class="badge badge-escalate">ESCALATE</span>`;
+    return d;
+}
+
+function switchTab(el, filter) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    if (filter === 'all') renderTable(allResults);
+    else if (filter === 'eligible') renderTable(allResults.filter(r => r.RPA_Status && r.RPA_Status.includes('ELIGIBLE')));
+    else if (filter === 'rejected') renderTable(allResults.filter(r => r.RPA_Status && !r.RPA_Status.includes('ELIGIBLE')));
+}
+
+// ── Sample images ──
+function renderImages() {
+    const images = [
+        { file: 'jacket_damaged.jpg', label: 'Jacket (Damaged)' },
+        { file: 'jeans_clean.jpg', label: 'Jeans (Clean)' },
+        { file: 'tshirt_stain.jpg', label: 'T-Shirt (Stain)' },
+        { file: 'underwear.jpg', label: 'Underwear (Hygiene)' },
+        { file: 'dress_tear.jpg', label: 'Dress (Tear)' },
+        { file: 'hoodie_clean.jpg', label: 'Hoodie (Clean)' },
+        { file: 'coat_pilling.jpg', label: 'Coat (Pilling)' },
+        { file: 'trousers_clean.jpg', label: 'Trousers (Clean)' },
+        { file: 'swimwear.jpg', label: 'Swimwear (Hygiene)' },
+        { file: 'blazer_missing_button.jpg', label: 'Blazer (Missing Button)' }
+    ];
+    const base = window.location.hostname.includes('github.io')
+        ? `https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/main/data/images/`
+        : '../data/images/';
+    document.getElementById('imagesGrid').innerHTML = images.map(img => `
+        <div class="image-card">
+            <img src="${base}${img.file}" alt="${img.label}"
+                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%22140%22><rect fill=%22%23334155%22 width=%22160%22 height=%22140%22/><text x=%2280%22 y=%2270%22 fill=%22%2364748b%22 text-anchor=%22middle%22 font-size=%2211%22>Not found</text></svg>'">
+            <div class="caption">${img.label}</div>
+        </div>
+    `).join('');
+}
+
+// ── Init ──
+renderImages();
+loadResults();
+
+// Set default purchase date to today
+document.getElementById('purchaseDate').valueAsDate = new Date();
+</script>
 </body>
 </html>

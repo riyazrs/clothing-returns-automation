@@ -2,6 +2,47 @@ name: Clothing Returns Pipeline
 
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Run mode: "batch" for all sample data, "single" for one submission'
+        required: true
+        default: 'batch'
+        type: choice
+        options:
+          - batch
+          - single
+      customer_name:
+        description: 'Customer name (single mode)'
+        required: false
+        type: string
+      item_type:
+        description: 'Clothing item type (e.g. Jacket, Jeans, Dress)'
+        required: false
+        type: string
+      purchase_date:
+        description: 'Purchase date (YYYY-MM-DD)'
+        required: false
+        type: string
+      hygiene_item:
+        description: 'Is this a hygiene item?'
+        required: false
+        default: 'No'
+        type: choice
+        options:
+          - 'No'
+          - 'Yes'
+      final_sale:
+        description: 'Was this a final sale item?'
+        required: false
+        default: 'No'
+        type: choice
+        options:
+          - 'No'
+          - 'Yes'
+      image_filename:
+        description: 'Uploaded image filename in data/submissions/'
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -25,10 +66,22 @@ jobs:
       - name: Generate synthetic images
         run: python generate_images.py
 
-      - name: Run full pipeline
+      - name: Run pipeline
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python orchestrator.py
+          PIPELINE_MODE: ${{ inputs.mode }}
+          SUBMIT_CUSTOMER: ${{ inputs.customer_name }}
+          SUBMIT_ITEM_TYPE: ${{ inputs.item_type }}
+          SUBMIT_PURCHASE_DATE: ${{ inputs.purchase_date }}
+          SUBMIT_HYGIENE: ${{ inputs.hygiene_item }}
+          SUBMIT_FINAL_SALE: ${{ inputs.final_sale }}
+          SUBMIT_IMAGE: ${{ inputs.image_filename }}
+        run: |
+          if [ "$PIPELINE_MODE" = "single" ]; then
+            python process_single.py
+          else
+            python orchestrator.py
+          fi
 
       - name: Export results to JSON for GitHub Pages
         run: python export_results.py
@@ -37,6 +90,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/Returns_Queue.xlsx returns_log.txt docs/results.json data/images/
+          git add data/Returns_Queue.xlsx returns_log.txt docs/results.json data/images/ data/submissions/
           git diff --cached --quiet || git commit -m "Pipeline run results - $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
           git push
