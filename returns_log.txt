@@ -1,0 +1,180 @@
+2026-04-30 12:55:58,517 [RPA] ============================================================
+2026-04-30 12:55:58,517 [RPA] RPA Eligibility Bot started
+2026-04-30 12:55:58,517 [RPA] ============================================================
+2026-04-30 12:55:58,551 [RPA] [ORD-1001] Jacket -> ELIGIBLE | Purchase was 10 days ago - within return window
+2026-04-30 12:55:58,551 [RPA] [ORD-1002] Jeans -> ELIGIBLE | Purchase was 5 days ago - within return window
+2026-04-30 12:55:58,551 [RPA] [ORD-1003] T-Shirt -> REJECTED - Outside Window | Purchase was 45 days ago (limit: 30 days)
+2026-04-30 12:55:58,551 [RPA] [ORD-1004] Underwear -> REJECTED - Hygiene Item | Item type 'Underwear' is non-returnable (hygiene policy)
+2026-04-30 12:55:58,555 [RPA] [ORD-1005] Dress -> ELIGIBLE | Purchase was 20 days ago - within return window
+2026-04-30 12:55:58,555 [RPA] [ORD-1006] Hoodie -> REJECTED - Final Sale | Item marked as Final Sale; returns not accepted
+2026-04-30 12:55:58,555 [RPA] [ORD-1007] Winter Coat -> ELIGIBLE | Purchase was 15 days ago - within return window
+2026-04-30 12:55:58,555 [RPA] [ORD-1008] Trousers -> ELIGIBLE | Purchase was 8 days ago - within return window
+2026-04-30 12:55:58,555 [RPA] [ORD-1009] Swimwear -> REJECTED - Hygiene Item | Item type 'Swimwear' is non-returnable (hygiene policy)
+2026-04-30 12:55:58,555 [RPA] [ORD-1010] Blazer -> ELIGIBLE | Purchase was 28 days ago - within return window
+2026-04-30 12:55:58,620 [RPA] ------------------------------------------------------------
+2026-04-30 12:55:58,620 [RPA] RPA complete. Eligible: 6 | Rejected: 4
+2026-04-30 12:55:58,620 [RPA] ============================================================
+2026-04-30 12:57:21,201 [AGENT] ============================================================
+2026-04-30 12:57:21,201 [AGENT] AI Garment Inspector Agent started
+2026-04-30 12:57:21,201 [AGENT] ============================================================
+2026-04-30 12:57:22,414 [AGENT] [ORD-1001] Inspecting Jacket | image: images/jacket_damaged.jpg
+2026-04-30 12:57:23,308 [AGENT] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 404 Not Found"
+2026-04-30 12:58:11,312 [AGENT] ============================================================
+2026-04-30 12:58:11,312 [AGENT] AI Garment Inspector Agent started
+2026-04-30 12:58:11,312 [AGENT] ============================================================
+2026-04-30 12:58:12,347 [AGENT] [ORD-1001] Inspecting Jacket | image: images/jacket_damaged.jpg
+2026-04-30 12:58:13,033 [AGENT] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 404 Not Found"
+2026-04-30 12:59:02,405 [AGENT] ============================================================
+2026-04-30 12:59:02,407 [AGENT] AI Garment Inspector Agent started
+2026-04-30 12:59:02,407 [AGENT] ============================================================
+2026-04-30 12:59:03,191 [AGENT] [ORD-1001] Inspecting Jacket | image: images/jacket_damaged.jpg
+2026-04-30 12:59:06,400 [AGENT] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 12:59:06,469 [AGENT] [ORD-1001] -> REJECT | defect=tear confidence=0.95 | A visible tear is clearly indicated on the jacket fabric, showing a distinct rip or split in the material.
+2026-04-30 12:59:06,469 [AGENT] [ORD-1002] Inspecting Jeans | image: images/jeans_clean.jpg
+2026-04-30 12:59:08,379 [AGENT] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 12:59:08,379 [AGENT] [ORD-1002] -> AUTO_APPROVE | defect=no_defect confidence=0.92 | The jeans appear clean with no visible stains, tears, pilling, or missing buttons/fasteners detected.
+2026-04-30 12:59:08,379 [AGENT] [ORD-1003] Skipping - RPA status: REJECTED - Outside Window
+2026-04-30 12:59:08,379 [AGENT] [ORD-1004] Skipping - RPA status: REJECTED - Hygiene Item
+2026-04-30 12:59:08,379 [AGENT] [ORD-1005] Inspecting Dress | image: images/dress_tear.jpg
+2026-04-30 12:59:11,394 [AGENT] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 12:59:11,400 [AGENT] [ORD-1005] -> REJECT | defect=tear confidence=0.93 | A visible tear or rip is clearly present in the center of the dress fabric, with the label indicating 'ladder trail' suggesting a significant fabric damage or run.
+2026-04-30 12:59:11,402 [AGENT] [ORD-1006] Skipping - RPA status: REJECTED - Final Sale
+2026-04-30 12:59:11,403 [AGENT] [ORD-1007] Inspecting Winter Coat | image: images/coat_pilling.jpg
+2026-04-30 12:59:13,876 [AGENT] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 12:59:13,878 [AGENT] [ORD-1007] -> REJECT | defect=pilling confidence=0.95 | Numerous fabric bobbles and fuzzing are clearly visible across the entire surface of the winter coat, indicating significant pilling defects.
+2026-04-30 12:59:13,878 [AGENT] [ORD-1008] Inspecting Trousers | image: images/trousers_clean.jpg
+2026-04-30 12:59:16,450 [AGENT] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 12:59:16,452 [AGENT] [ORD-1008] -> AUTO_APPROVE | defect=no_defect confidence=0.91 | The trousers appear clean with no visible stains, tears, pilling, or missing buttons detected, and the image label confirms 'CLEAN - NO DEFECTS'.
+2026-04-30 12:59:16,452 [AGENT] [ORD-1009] Skipping - RPA status: REJECTED - Hygiene Item
+2026-04-30 12:59:16,452 [AGENT] [ORD-1010] Inspecting Blazer | image: images/blazer_missing_button.jpg
+2026-04-30 12:59:18,988 [AGENT] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 12:59:18,989 [AGENT] [ORD-1010] -> REJECT | defect=missing_button confidence=0.97 | The blazer has a clearly marked missing button on the second position of the button row, indicated by the crossed-out circle symbol and 'MISSING BUTTON' label.
+2026-04-30 12:59:19,075 [AGENT] ------------------------------------------------------------
+2026-04-30 12:59:19,075 [AGENT] Agent complete. Approved: 2 | Rejected: 4 | Escalated: 0 | Skipped: 4
+2026-04-30 12:59:19,075 [AGENT] ============================================================
+2026-04-30 13:02:54,570 [ORCHESTRATOR] ============================================================
+2026-04-30 13:02:54,570 [ORCHESTRATOR] CLOTHING RETURNS PIPELINE STARTED - 2026-04-30 13:02:54
+2026-04-30 13:02:54,570 [ORCHESTRATOR] ============================================================
+2026-04-30 13:02:54,570 [ORCHESTRATOR] STAGE 1: Running RPA Eligibility Checker...
+2026-04-30 13:02:55,631 [ORCHESTRATOR] ============================================================
+2026-04-30 13:02:55,631 [ORCHESTRATOR] RPA Eligibility Bot started
+2026-04-30 13:02:55,631 [ORCHESTRATOR] ============================================================
+2026-04-30 13:02:55,697 [ORCHESTRATOR] [ORD-1001] Jacket -> ELIGIBLE | Purchase was 10 days ago - within return window
+2026-04-30 13:02:55,699 [ORCHESTRATOR] [ORD-1002] Jeans -> ELIGIBLE | Purchase was 5 days ago - within return window
+2026-04-30 13:02:55,699 [ORCHESTRATOR] [ORD-1003] T-Shirt -> REJECTED - Outside Window | Purchase was 45 days ago (limit: 30 days)
+2026-04-30 13:02:55,699 [ORCHESTRATOR] [ORD-1004] Underwear -> REJECTED - Hygiene Item | Item type 'Underwear' is non-returnable (hygiene policy)
+2026-04-30 13:02:55,699 [ORCHESTRATOR] [ORD-1005] Dress -> ELIGIBLE | Purchase was 20 days ago - within return window
+2026-04-30 13:02:55,699 [ORCHESTRATOR] [ORD-1006] Hoodie -> REJECTED - Final Sale | Item marked as Final Sale; returns not accepted
+2026-04-30 13:02:55,699 [ORCHESTRATOR] [ORD-1007] Winter Coat -> ELIGIBLE | Purchase was 15 days ago - within return window
+2026-04-30 13:02:55,699 [ORCHESTRATOR] [ORD-1008] Trousers -> ELIGIBLE | Purchase was 8 days ago - within return window
+2026-04-30 13:02:55,699 [ORCHESTRATOR] [ORD-1009] Swimwear -> REJECTED - Hygiene Item | Item type 'Swimwear' is non-returnable (hygiene policy)
+2026-04-30 13:02:55,699 [ORCHESTRATOR] [ORD-1010] Blazer -> ELIGIBLE | Purchase was 28 days ago - within return window
+2026-04-30 13:02:55,739 [ORCHESTRATOR] ------------------------------------------------------------
+2026-04-30 13:02:55,739 [ORCHESTRATOR] RPA complete. Eligible: 6 | Rejected: 4
+2026-04-30 13:02:55,739 [ORCHESTRATOR] ============================================================
+2026-04-30 13:02:55,739 [ORCHESTRATOR] STAGE 1 COMPLETE -> 6 eligible, 4 rejected by RPA
+2026-04-30 13:02:55,739 [ORCHESTRATOR] STAGE 2: Running AI Garment Inspector...
+2026-04-30 13:02:57,975 [ORCHESTRATOR] ============================================================
+2026-04-30 13:02:57,975 [ORCHESTRATOR] AI Garment Inspector Agent started
+2026-04-30 13:02:57,975 [ORCHESTRATOR] ============================================================
+2026-04-30 13:02:58,929 [ORCHESTRATOR] [ORD-1001] Inspecting Jacket | image: images/jacket_damaged.jpg
+2026-04-30 13:03:02,161 [ORCHESTRATOR] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 13:03:02,217 [ORCHESTRATOR] [ORD-1001] -> REJECT | defect=tear confidence=0.95 | A visible tear is clearly indicated on the jacket fabric, showing a distinct rip or cut in the material.
+2026-04-30 13:03:02,217 [ORCHESTRATOR] [ORD-1002] Inspecting Jeans | image: images/jeans_clean.jpg
+2026-04-30 13:03:05,034 [ORCHESTRATOR] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 13:03:05,036 [ORCHESTRATOR] [ORD-1002] -> AUTO_APPROVE | defect=no_defect confidence=0.92 | The jeans appear clean with no visible stains, tears, pilling, or missing buttons/fasteners detected.
+2026-04-30 13:03:05,038 [ORCHESTRATOR] [ORD-1003] Skipping - RPA status: REJECTED - Outside Window
+2026-04-30 13:03:05,038 [ORCHESTRATOR] [ORD-1004] Skipping - RPA status: REJECTED - Hygiene Item
+2026-04-30 13:03:05,038 [ORCHESTRATOR] [ORD-1005] Inspecting Dress | image: images/dress_tear.jpg
+2026-04-30 13:03:07,694 [ORCHESTRATOR] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 13:03:07,697 [ORCHESTRATOR] [ORD-1005] -> REJECT | defect=tear confidence=0.91 | A visible tear/rip is clearly present on the front of the dress, with the label 'tear' annotated in red confirming fabric damage.
+2026-04-30 13:03:07,697 [ORCHESTRATOR] [ORD-1006] Skipping - RPA status: REJECTED - Final Sale
+2026-04-30 13:03:07,697 [ORCHESTRATOR] [ORD-1007] Inspecting Winter Coat | image: images/coat_pilling.jpg
+2026-04-30 13:03:10,294 [ORCHESTRATOR] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 13:03:10,294 [ORCHESTRATOR] [ORD-1007] -> REJECT | defect=pilling confidence=0.95 | Numerous fabric bobbles and fuzzing spots are clearly visible across the entire surface of the winter coat, indicating significant pilling defects.
+2026-04-30 13:03:10,294 [ORCHESTRATOR] [ORD-1008] Inspecting Trousers | image: images/trousers_clean.jpg
+2026-04-30 13:03:12,691 [ORCHESTRATOR] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 13:03:12,693 [ORCHESTRATOR] [ORD-1008] -> AUTO_APPROVE | defect=no_defect confidence=0.91 | The trousers image is labelled 'CLEAN - NO DEFECTS' and no visible stains, tears, pilling, or missing fasteners are apparent in the image.
+2026-04-30 13:03:12,693 [ORCHESTRATOR] [ORD-1009] Skipping - RPA status: REJECTED - Hygiene Item
+2026-04-30 13:03:12,695 [ORCHESTRATOR] [ORD-1010] Inspecting Blazer | image: images/blazer_missing_button.jpg
+2026-04-30 13:03:15,133 [ORCHESTRATOR] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 13:03:15,137 [ORCHESTRATOR] [ORD-1010] -> REJECT | defect=missing_button confidence=0.97 | The blazer has a clearly missing button in the second position of the button row, indicated by the crossed-out circle symbol and confirmed by the 'MISSING BUTTON' label.
+2026-04-30 13:03:15,181 [ORCHESTRATOR] ------------------------------------------------------------
+2026-04-30 13:03:15,182 [ORCHESTRATOR] Agent complete. Approved: 2 | Rejected: 4 | Escalated: 0 | Skipped: 4
+2026-04-30 13:03:15,182 [ORCHESTRATOR] ============================================================
+2026-04-30 13:03:15,182 [ORCHESTRATOR] STAGE 2 COMPLETE -> 2 approved, 4 rejected, 0 escalated
+2026-04-30 13:03:15,182 [ORCHESTRATOR] ============================================================
+2026-04-30 13:03:15,182 [ORCHESTRATOR] PIPELINE SUMMARY
+2026-04-30 13:03:15,182 [ORCHESTRATOR]   Total processed     : 10
+2026-04-30 13:03:15,182 [ORCHESTRATOR]   RPA rejected        : 4
+2026-04-30 13:03:15,182 [ORCHESTRATOR]   AI approved         : 2
+2026-04-30 13:03:15,182 [ORCHESTRATOR]   AI rejected         : 4
+2026-04-30 13:03:15,182 [ORCHESTRATOR]   Escalated to human  : 0
+2026-04-30 13:03:15,182 [ORCHESTRATOR]   Results saved to    : data/Returns_Queue.xlsx
+2026-04-30 13:03:15,182 [ORCHESTRATOR]   Full log at         : returns_log.txt
+2026-04-30 13:03:15,182 [ORCHESTRATOR] ============================================================
+2026-04-30 13:05:58,568 [ORCHESTRATOR] ============================================================
+2026-04-30 13:05:58,568 [ORCHESTRATOR] CLOTHING RETURNS PIPELINE STARTED - 2026-04-30 13:05:58
+2026-04-30 13:05:58,568 [ORCHESTRATOR] ============================================================
+2026-04-30 13:05:58,568 [ORCHESTRATOR] STAGE 1: Running RPA Eligibility Checker...
+2026-04-30 13:05:59,607 [ORCHESTRATOR] ============================================================
+2026-04-30 13:05:59,607 [ORCHESTRATOR] RPA Eligibility Bot started
+2026-04-30 13:05:59,607 [ORCHESTRATOR] ============================================================
+2026-04-30 13:05:59,668 [ORCHESTRATOR] [ORD-1001] Jacket -> ELIGIBLE | Purchase was 10 days ago - within return window
+2026-04-30 13:05:59,668 [ORCHESTRATOR] [ORD-1002] Jeans -> ELIGIBLE | Purchase was 5 days ago - within return window
+2026-04-30 13:05:59,668 [ORCHESTRATOR] [ORD-1003] T-Shirt -> REJECTED - Outside Window | Purchase was 45 days ago (limit: 30 days)
+2026-04-30 13:05:59,668 [ORCHESTRATOR] [ORD-1004] Underwear -> REJECTED - Hygiene Item | Item type 'Underwear' is non-returnable (hygiene policy)
+2026-04-30 13:05:59,668 [ORCHESTRATOR] [ORD-1005] Dress -> ELIGIBLE | Purchase was 20 days ago - within return window
+2026-04-30 13:05:59,668 [ORCHESTRATOR] [ORD-1006] Hoodie -> REJECTED - Final Sale | Item marked as Final Sale; returns not accepted
+2026-04-30 13:05:59,668 [ORCHESTRATOR] [ORD-1007] Winter Coat -> ELIGIBLE | Purchase was 15 days ago - within return window
+2026-04-30 13:05:59,668 [ORCHESTRATOR] [ORD-1008] Trousers -> ELIGIBLE | Purchase was 8 days ago - within return window
+2026-04-30 13:05:59,668 [ORCHESTRATOR] [ORD-1009] Swimwear -> REJECTED - Hygiene Item | Item type 'Swimwear' is non-returnable (hygiene policy)
+2026-04-30 13:05:59,668 [ORCHESTRATOR] [ORD-1010] Blazer -> ELIGIBLE | Purchase was 28 days ago - within return window
+2026-04-30 13:05:59,668 [ORCHESTRATOR] [ORD-1011] Cardigan -> ELIGIBLE | Purchase was 7 days ago - within return window
+2026-04-30 13:05:59,716 [ORCHESTRATOR] ------------------------------------------------------------
+2026-04-30 13:05:59,716 [ORCHESTRATOR] RPA complete. Eligible: 7 | Rejected: 4
+2026-04-30 13:05:59,716 [ORCHESTRATOR] ============================================================
+2026-04-30 13:05:59,716 [ORCHESTRATOR] STAGE 1 COMPLETE -> 7 eligible, 4 rejected by RPA
+2026-04-30 13:05:59,729 [ORCHESTRATOR] STAGE 2: Running AI Garment Inspector...
+2026-04-30 13:06:01,959 [ORCHESTRATOR] ============================================================
+2026-04-30 13:06:01,960 [ORCHESTRATOR] AI Garment Inspector Agent started
+2026-04-30 13:06:01,960 [ORCHESTRATOR] ============================================================
+2026-04-30 13:06:02,816 [ORCHESTRATOR] [ORD-1001] Inspecting Jacket | image: images/jacket_damaged.jpg
+2026-04-30 13:06:05,820 [ORCHESTRATOR] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 13:06:05,870 [ORCHESTRATOR] [ORD-1001] -> REJECT | defect=tear confidence=0.95 | A visible tear is clearly indicated on the jacket fabric, shown by the angular rip mark and confirmed by the 'VISIBLE TEAR' label in the image.
+2026-04-30 13:06:05,872 [ORCHESTRATOR] [ORD-1002] Inspecting Jeans | image: images/jeans_clean.jpg
+2026-04-30 13:06:08,230 [ORCHESTRATOR] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 13:06:08,232 [ORCHESTRATOR] [ORD-1002] -> AUTO_APPROVE | defect=no_defect confidence=0.92 | The jeans appear clean with no visible stains, tears, pilling, or missing buttons/fasteners detected.
+2026-04-30 13:06:08,232 [ORCHESTRATOR] [ORD-1003] Skipping - RPA status: REJECTED - Outside Window
+2026-04-30 13:06:08,232 [ORCHESTRATOR] [ORD-1004] Skipping - RPA status: REJECTED - Hygiene Item
+2026-04-30 13:06:08,232 [ORCHESTRATOR] [ORD-1005] Inspecting Dress | image: images/dress_tear.jpg
+2026-04-30 13:06:11,814 [ORCHESTRATOR] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 13:06:11,816 [ORCHESTRATOR] [ORD-1005] -> REJECT | defect=tear confidence=0.93 | A visible tear or rip is clearly present in the center of the dress fabric, with the label 'raster true' confirming the defect annotation.
+2026-04-30 13:06:11,819 [ORCHESTRATOR] [ORD-1006] Skipping - RPA status: REJECTED - Final Sale
+2026-04-30 13:06:11,819 [ORCHESTRATOR] [ORD-1007] Inspecting Winter Coat | image: images/coat_pilling.jpg
+2026-04-30 13:06:14,221 [ORCHESTRATOR] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 13:06:14,221 [ORCHESTRATOR] [ORD-1007] -> REJECT | defect=pilling confidence=0.95 | Numerous fabric bobbles and fuzzing are clearly visible across the entire surface of the winter coat, indicating significant pilling defects.
+2026-04-30 13:06:14,221 [ORCHESTRATOR] [ORD-1008] Inspecting Trousers | image: images/trousers_clean.jpg
+2026-04-30 13:06:16,656 [ORCHESTRATOR] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 13:06:16,661 [ORCHESTRATOR] [ORD-1008] -> AUTO_APPROVE | defect=no_defect confidence=0.91 | The trousers image is labelled 'CLEAN - NO DEFECTS' and no visible stains, tears, pilling, or missing fasteners are apparent in the image.
+2026-04-30 13:06:16,661 [ORCHESTRATOR] [ORD-1009] Skipping - RPA status: REJECTED - Hygiene Item
+2026-04-30 13:06:16,661 [ORCHESTRATOR] [ORD-1010] Inspecting Blazer | image: images/blazer_missing_button.jpg
+2026-04-30 13:06:19,039 [ORCHESTRATOR] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 13:06:19,061 [ORCHESTRATOR] [ORD-1010] -> REJECT | defect=missing_button confidence=0.97 | A missing button is clearly indicated on the blazer, with one of the four button positions marked with a crossed-out symbol and labeled 'MISSING BUTTON'.
+2026-04-30 13:06:19,062 [ORCHESTRATOR] [ORD-1011] Inspecting Cardigan | image: images/trousers_clean.jpg
+2026-04-30 13:06:21,854 [ORCHESTRATOR] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-30 13:06:21,871 [ORCHESTRATOR] [ORD-1011] -> AUTO_APPROVE | defect=no_defect confidence=0.87 | The garment (trousers) displays no visible defects, with the image clearly indicating 'CLEAN - NO DEFECTS' and no stains, tears, pilling, or missing buttons observed.
+2026-04-30 13:06:21,923 [ORCHESTRATOR] ------------------------------------------------------------
+2026-04-30 13:06:21,923 [ORCHESTRATOR] Agent complete. Approved: 3 | Rejected: 4 | Escalated: 0 | Skipped: 4
+2026-04-30 13:06:21,923 [ORCHESTRATOR] ============================================================
+2026-04-30 13:06:21,923 [ORCHESTRATOR] STAGE 2 COMPLETE -> 3 approved, 4 rejected, 0 escalated
+2026-04-30 13:06:21,925 [ORCHESTRATOR] ============================================================
+2026-04-30 13:06:21,925 [ORCHESTRATOR] PIPELINE SUMMARY
+2026-04-30 13:06:21,925 [ORCHESTRATOR]   Total processed     : 11
+2026-04-30 13:06:21,925 [ORCHESTRATOR]   RPA rejected        : 4
+2026-04-30 13:06:21,925 [ORCHESTRATOR]   AI approved         : 3
+2026-04-30 13:06:21,925 [ORCHESTRATOR]   AI rejected         : 4
+2026-04-30 13:06:21,925 [ORCHESTRATOR]   Escalated to human  : 0
+2026-04-30 13:06:21,925 [ORCHESTRATOR]   Results saved to    : data/Returns_Queue.xlsx
+2026-04-30 13:06:21,925 [ORCHESTRATOR]   Full log at         : returns_log.txt
+2026-04-30 13:06:21,925 [ORCHESTRATOR] ============================================================

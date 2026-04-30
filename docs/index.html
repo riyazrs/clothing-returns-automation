@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clothing Returns Automation - H9IAPA</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #1e293b, #334155); padding: 2rem; text-align: center; border-bottom: 3px solid #3b82f6; }
+        .header h1 { font-size: 1.8rem; color: #f8fafc; }
+        .header p { color: #94a3b8; margin-top: 0.5rem; font-size: 0.95rem; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
+        .pipeline-section { background: #1e293b; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; border: 1px solid #334155; }
+        .pipeline-section h2 { color: #60a5fa; margin-bottom: 1rem; font-size: 1.3rem; }
+
+        .stage-flow { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; margin: 1.5rem 0; }
+        .stage-box { background: #334155; padding: 1rem 1.5rem; border-radius: 8px; text-align: center; min-width: 200px; }
+        .stage-box.rpa { border-left: 4px solid #f59e0b; }
+        .stage-box.ai { border-left: 4px solid #8b5cf6; }
+        .stage-box.orch { border-left: 4px solid #10b981; }
+        .stage-box h3 { font-size: 0.9rem; color: #94a3b8; }
+        .stage-box p { font-size: 0.85rem; color: #cbd5e1; margin-top: 0.3rem; }
+        .arrow { color: #475569; font-size: 1.5rem; }
+
+        .btn { display: inline-block; padding: 0.8rem 2rem; border-radius: 8px; border: none; font-size: 1rem; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-primary:hover { background: #2563eb; }
+        .btn-primary:disabled { background: #475569; cursor: not-allowed; }
+        .btn-secondary { background: #334155; color: #e2e8f0; border: 1px solid #475569; }
+        .btn-secondary:hover { background: #3b4f6b; }
+
+        .trigger-area { text-align: center; margin: 1.5rem 0; }
+        .trigger-area p { color: #94a3b8; margin-bottom: 1rem; font-size: 0.9rem; }
+
+        .token-input { display: flex; gap: 0.5rem; max-width: 500px; margin: 1rem auto; }
+        .token-input input { flex: 1; padding: 0.6rem 1rem; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: #e2e8f0; font-size: 0.9rem; }
+        .token-input input::placeholder { color: #64748b; }
+
+        .status-bar { margin-top: 1rem; padding: 0.8rem 1rem; border-radius: 6px; font-size: 0.9rem; display: none; }
+        .status-bar.info { background: #1e3a5f; color: #93c5fd; display: block; }
+        .status-bar.success { background: #14532d; color: #86efac; display: block; }
+        .status-bar.error { background: #450a0a; color: #fca5a5; display: block; }
+        .status-bar.running { background: #422006; color: #fed7aa; display: block; }
+
+        .results-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
+        .results-table th { background: #334155; padding: 0.7rem; text-align: left; color: #94a3b8; font-weight: 600; position: sticky; top: 0; }
+        .results-table td { padding: 0.7rem; border-bottom: 1px solid #1e293b; }
+        .results-table tr:hover { background: #1e293b; }
+
+        .badge { padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+        .badge-approve { background: #14532d; color: #86efac; }
+        .badge-reject { background: #450a0a; color: #fca5a5; }
+        .badge-escalate { background: #422006; color: #fed7aa; }
+        .badge-eligible { background: #1e3a5f; color: #93c5fd; }
+        .badge-rejected-rpa { background: #334155; color: #94a3b8; }
+
+        .images-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .image-card { background: #334155; border-radius: 8px; overflow: hidden; text-align: center; }
+        .image-card img { width: 100%; height: 160px; object-fit: cover; }
+        .image-card .caption { padding: 0.5rem; font-size: 0.8rem; color: #94a3b8; }
+
+        .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+        .summary-card { background: #334155; padding: 1.2rem; border-radius: 8px; text-align: center; }
+        .summary-card .number { font-size: 2rem; font-weight: 700; }
+        .summary-card .label { font-size: 0.8rem; color: #94a3b8; margin-top: 0.3rem; }
+        .num-total { color: #60a5fa; }
+        .num-approved { color: #4ade80; }
+        .num-rejected { color: #f87171; }
+        .num-escalated { color: #fbbf24; }
+        .num-rpa-rejected { color: #94a3b8; }
+
+        .tab-bar { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+        .tab { padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem; background: #334155; color: #94a3b8; border: none; }
+        .tab.active { background: #3b82f6; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .table-wrapper { overflow-x: auto; }
+        .log-output { background: #0f172a; padding: 1rem; border-radius: 6px; font-family: monospace; font-size: 0.8rem; max-height: 400px; overflow-y: auto; white-space: pre-wrap; color: #94a3b8; margin-top: 1rem; }
+
+        @media (max-width: 768px) {
+            .stage-flow { flex-direction: column; }
+            .arrow { transform: rotate(90deg); }
+            .summary-cards { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Clothing Returns Automation Pipeline</h1>
+        <p>H9IAPA - Intelligent Agents and Process Automation | National College of Ireland</p>
+    </div>
+
+    <div class="container">
+        <!-- Pipeline Overview -->
+        <div class="pipeline-section">
+            <h2>Pipeline Architecture</h2>
+            <div class="stage-flow">
+                <div class="stage-box rpa">
+                    <h3>Stage 1: RPA Bot</h3>
+                    <p>Eligibility rules check<br>(30-day window, hygiene, final sale)</p>
+                </div>
+                <span class="arrow">&#8594;</span>
+                <div class="stage-box ai">
+                    <h3>Stage 2: AI Agent</h3>
+                    <p>Claude Vision inspection<br>(stain, tear, pilling, missing button)</p>
+                </div>
+                <span class="arrow">&#8594;</span>
+                <div class="stage-box orch">
+                    <h3>Results</h3>
+                    <p>AUTO_APPROVE / REJECT / ESCALATE</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trigger Pipeline -->
+        <div class="pipeline-section">
+            <h2>Run Pipeline</h2>
+            <div class="trigger-area">
+                <p>Trigger the pipeline via GitHub Actions. You need a GitHub personal access token with <code>repo</code> and <code>workflow</code> scopes.</p>
+                <div class="token-input">
+                    <input type="password" id="ghToken" placeholder="GitHub Personal Access Token (ghp_...)">
+                </div>
+                <div style="margin-top: 1rem;">
+                    <button class="btn btn-primary" id="triggerBtn" onclick="triggerPipeline()">Run Pipeline</button>
+                    <button class="btn btn-secondary" style="margin-left: 0.5rem;" onclick="loadResults()">Refresh Results</button>
+                </div>
+                <div class="status-bar" id="statusBar"></div>
+            </div>
+        </div>
+
+        <!-- Sample Images -->
+        <div class="pipeline-section">
+            <h2>Garment Images (Sample Data)</h2>
+            <div class="images-grid" id="imagesGrid"></div>
+        </div>
+
+        <!-- Results -->
+        <div class="pipeline-section">
+            <h2>Pipeline Results</h2>
+            <div class="summary-cards" id="summaryCards" style="display:none;">
+                <div class="summary-card"><div class="number num-total" id="totalCount">0</div><div class="label">Total Processed</div></div>
+                <div class="summary-card"><div class="number num-rpa-rejected" id="rpaRejCount">0</div><div class="label">RPA Rejected</div></div>
+                <div class="summary-card"><div class="number num-approved" id="approvedCount">0</div><div class="label">AI Approved</div></div>
+                <div class="summary-card"><div class="number num-rejected" id="rejectedCount">0</div><div class="label">AI Rejected</div></div>
+                <div class="summary-card"><div class="number num-escalated" id="escalatedCount">0</div><div class="label">Escalated</div></div>
+            </div>
+
+            <div class="tab-bar">
+                <button class="tab active" onclick="switchTab('all')">All Results</button>
+                <button class="tab" onclick="switchTab('eligible')">AI Inspected</button>
+                <button class="tab" onclick="switchTab('rejected')">RPA Rejected</button>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="results-table" id="resultsTable">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Item</th>
+                            <th>Purchase Date</th>
+                            <th>RPA Status</th>
+                            <th>AI Decision</th>
+                            <th>Defect</th>
+                            <th>Confidence</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody">
+                        <tr><td colspan="9" style="text-align:center; color:#64748b; padding:2rem;">No results yet. Run the pipeline or click Refresh Results.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="lastUpdated" style="margin-top:1rem; font-size:0.8rem; color:#64748b;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-detect repo info from the URL
+        function getRepoInfo() {
+            const host = window.location.hostname;
+            const path = window.location.pathname;
+            if (host.endsWith('.github.io')) {
+                const owner = host.replace('.github.io', '');
+                const repo = path.split('/')[1] || '';
+                return { owner, repo };
+            }
+            return { owner: '', repo: '' };
+        }
+
+        const REPO = getRepoInfo();
+        const IMAGES = [
+            { file: 'jacket_damaged.jpg', label: 'Jacket (Damaged)' },
+            { file: 'jeans_clean.jpg', label: 'Jeans (Clean)' },
+            { file: 'tshirt_stain.jpg', label: 'T-Shirt (Stain)' },
+            { file: 'underwear.jpg', label: 'Underwear (Hygiene)' },
+            { file: 'dress_tear.jpg', label: 'Dress (Tear)' },
+            { file: 'hoodie_clean.jpg', label: 'Hoodie (Clean)' },
+            { file: 'coat_pilling.jpg', label: 'Coat (Pilling)' },
+            { file: 'trousers_clean.jpg', label: 'Trousers (Clean)' },
+            { file: 'swimwear.jpg', label: 'Swimwear (Hygiene)' },
+            { file: 'blazer_missing_button.jpg', label: 'Blazer (Missing Button)' }
+        ];
+
+        // Render images
+        function renderImages() {
+            const grid = document.getElementById('imagesGrid');
+            // Try relative path from docs/ to data/images/
+            const basePath = window.location.hostname.includes('github.io')
+                ? `/${REPO.repo}/data/images/`
+                : '../data/images/';
+            grid.innerHTML = IMAGES.map(img => `
+                <div class="image-card">
+                    <img src="${basePath}${img.file}" alt="${img.label}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22180%22 height=%22160%22><rect fill=%22%23334155%22 width=%22180%22 height=%22160%22/><text x=%2290%22 y=%2280%22 fill=%22%2364748b%22 text-anchor=%22middle%22 font-size=%2212%22>Image not found</text></svg>'">
+                    <div class="caption">${img.label}</div>
+                </div>
+            `).join('');
+        }
+
+        function setStatus(msg, type) {
+            const bar = document.getElementById('statusBar');
+            bar.className = 'status-bar ' + type;
+            bar.textContent = msg;
+        }
+
+        async function triggerPipeline() {
+            const token = document.getElementById('ghToken').value.trim();
+            if (!token) { setStatus('Please enter a GitHub token.', 'error'); return; }
+            if (!REPO.owner || !REPO.repo) { setStatus('Could not detect repo from URL. Are you on GitHub Pages?', 'error'); return; }
+
+            const btn = document.getElementById('triggerBtn');
+            btn.disabled = true;
+            btn.textContent = 'Triggering...';
+            setStatus('Dispatching workflow...', 'info');
+
+            try {
+                const resp = await fetch(`https://api.github.com/repos/${REPO.owner}/${REPO.repo}/actions/workflows/pipeline.yml/dispatches`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    },
+                    body: JSON.stringify({ ref: 'main' })
+                });
+
+                if (resp.status === 204) {
+                    setStatus('Pipeline triggered! It takes 1-2 minutes to complete. Click "Refresh Results" after it finishes.', 'success');
+                    pollWorkflow(token);
+                } else {
+                    const err = await resp.json();
+                    setStatus(`Failed: ${err.message || resp.statusText}`, 'error');
+                }
+            } catch (e) {
+                setStatus(`Error: ${e.message}`, 'error');
+            }
+            btn.disabled = false;
+            btn.textContent = 'Run Pipeline';
+        }
+
+        async function pollWorkflow(token) {
+            setStatus('Pipeline running... checking status...', 'running');
+            const maxAttempts = 30;
+            for (let i = 0; i < maxAttempts; i++) {
+                await new Promise(r => setTimeout(r, 10000));
+                try {
+                    const resp = await fetch(`https://api.github.com/repos/${REPO.owner}/${REPO.repo}/actions/runs?per_page=1`, {
+                        headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+                    });
+                    const data = await resp.json();
+                    const run = data.workflow_runs?.[0];
+                    if (run && run.status === 'completed') {
+                        if (run.conclusion === 'success') {
+                            setStatus('Pipeline completed successfully! Loading results...', 'success');
+                            setTimeout(() => loadResults(), 3000);
+                        } else {
+                            setStatus(`Pipeline finished with status: ${run.conclusion}. Check Actions tab for details.`, 'error');
+                        }
+                        return;
+                    }
+                    setStatus(`Pipeline running... (check ${i+1}/${maxAttempts})`, 'running');
+                } catch (e) { /* continue polling */ }
+            }
+            setStatus('Polling timed out. Check GitHub Actions tab for status.', 'error');
+        }
+
+        async function loadResults() {
+            try {
+                const basePath = window.location.hostname.includes('github.io')
+                    ? `/${REPO.repo}/docs/results.json`
+                    : 'results.json';
+                const resp = await fetch(basePath + '?t=' + Date.now());
+                if (!resp.ok) { setStatus('No results file found yet. Run the pipeline first.', 'info'); return; }
+                const data = await resp.json();
+                renderResults(data);
+            } catch (e) {
+                setStatus('Could not load results: ' + e.message, 'error');
+            }
+        }
+
+        let allResults = [];
+        function renderResults(data) {
+            allResults = data.results;
+            document.getElementById('lastUpdated').textContent = `Last pipeline run: ${new Date(data.timestamp).toLocaleString()}`;
+
+            // Summary
+            const total = allResults.length;
+            const rpaRej = allResults.filter(r => r.RPA_Status && !r.RPA_Status.includes('ELIGIBLE')).length;
+            const approved = allResults.filter(r => r.AI_Decision === 'AUTO_APPROVE').length;
+            const rejected = allResults.filter(r => r.AI_Decision === 'REJECT').length;
+            const escalated = allResults.filter(r => r.AI_Decision === 'ESCALATE').length;
+
+            document.getElementById('summaryCards').style.display = 'grid';
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('rpaRejCount').textContent = rpaRej;
+            document.getElementById('approvedCount').textContent = approved;
+            document.getElementById('rejectedCount').textContent = rejected;
+            document.getElementById('escalatedCount').textContent = escalated;
+
+            renderTable(allResults);
+        }
+
+        function renderTable(rows) {
+            const tbody = document.getElementById('resultsBody');
+            if (!rows.length) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#64748b;padding:2rem;">No data</td></tr>';
+                return;
+            }
+            tbody.innerHTML = rows.map(r => `<tr>
+                <td><strong>${r.Order_ID || ''}</strong></td>
+                <td>${r.Customer_Name || ''}</td>
+                <td>${r.Item_Type || ''}</td>
+                <td>${r.Purchase_Date || ''}</td>
+                <td>${rpaBadge(r.RPA_Status)}</td>
+                <td>${aiBadge(r.AI_Decision)}</td>
+                <td>${r.AI_Defect || '-'}</td>
+                <td>${r.AI_Confidence != null ? Number(r.AI_Confidence).toFixed(2) : '-'}</td>
+                <td style="max-width:200px;font-size:0.8rem;color:#94a3b8;">${r.Notes || ''}</td>
+            </tr>`).join('');
+        }
+
+        function rpaBadge(status) {
+            if (!status) return '-';
+            if (status.includes('ELIGIBLE')) return `<span class="badge badge-eligible">${status}</span>`;
+            return `<span class="badge badge-rejected-rpa">${status}</span>`;
+        }
+
+        function aiBadge(decision) {
+            if (!decision) return '-';
+            if (decision === 'AUTO_APPROVE') return `<span class="badge badge-approve">AUTO_APPROVE</span>`;
+            if (decision === 'REJECT') return `<span class="badge badge-reject">REJECT</span>`;
+            if (decision === 'ESCALATE') return `<span class="badge badge-escalate">ESCALATE</span>`;
+            return decision;
+        }
+
+        function switchTab(filter) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            if (filter === 'all') renderTable(allResults);
+            else if (filter === 'eligible') renderTable(allResults.filter(r => r.RPA_Status && r.RPA_Status.includes('ELIGIBLE')));
+            else if (filter === 'rejected') renderTable(allResults.filter(r => r.RPA_Status && !r.RPA_Status.includes('ELIGIBLE')));
+        }
+
+        // Init
+        renderImages();
+        loadResults();
+    </script>
+</body>
+</html>
