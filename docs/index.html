@@ -503,12 +503,12 @@ function hideLoader() {
 
 // ── Poll for single submission result ──
 async function pollForResult() {
-    showLoader('Uploading & triggering pipeline...', 'Starting GitHub Actions runner', 1);
-    await new Promise(r => setTimeout(r, 30000));
+    showLoader('Uploading & triggering pipeline...', 'Starting GitHub Actions runner (usually takes 60-90s)', 1);
+    await new Promise(r => setTimeout(r, 60000));
 
     showLoader('Running eligibility check...', 'RPA bot is verifying your return details', 2);
 
-    const deadline = Date.now() + 3 * 60 * 1000;
+    const deadline = Date.now() + 6 * 60 * 1000;
     let rpaDetected = false;
 
     while (Date.now() < deadline) {
