@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-30T18:11:07.142886Z",
+  "timestamp": "2026-04-30T22:45:47.961229Z",
   "results": [
     {
       "Order_ID": "ORD-1001",
@@ -180,6 +180,21 @@
       "AI_Defect": "tear",
       "AI_Confidence": 0.95,
       "Notes": "The jeans display multiple large intentional-style rips, holes, and frayed tears across both legs, along with visible paint-like staining/discolouration throughout the fabric."
+    },
+    {
+      "Order_ID": "ORD-1013",
+      "Customer_Name": "Sean Kelly",
+      "Item_Type": "Jeans",
+      "Purchase_Date": "2026-04-30",
+      "Return_Date": "2026-04-30",
+      "Hygiene_Flag": "No",
+      "Final_Sale_Flag": "No",
+      "Image_Path": "submissions/jeans_1777589130.png",
+      "RPA_Status": "ELIGIBLE FOR AI INSPECTION",
+      "AI_Decision": "REJECT",
+      "AI_Defect": "tear",
+      "AI_Confidence": 0.95,
+      "Notes": "The jeans display multiple large intentional-style rips, holes, and frayed tears throughout the legs, along with what appears to be paint-like staining/discolouration across the fabric."
     }
   ]
 }
