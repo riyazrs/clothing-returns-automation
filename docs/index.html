@@ -159,10 +159,6 @@
                 Fill in the product details and drop a garment image. The pipeline will run through GitHub Actions and return the result.
             </p>
 
-            <div class="token-row">
-                <input type="password" id="ghToken" placeholder="GitHub Personal Access Token (ghp_...) - repo & workflow scopes">
-            </div>
-
             <div class="form-grid">
                 <div class="form-group">
                     <label>Customer Name</label>
@@ -289,7 +285,9 @@ function getRepoInfo() {
 const REPO = getRepoInfo();
 
 function ghHeaders(token) {
-    return { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' };
+    const headers = { 'Accept': 'application/vnd.github.v3+json' };
+    if (token) headers['Authorization'] = `token ${token}`;
+    return headers;
 }
 
 // ── Status bar ──
@@ -355,109 +353,92 @@ function removeImage(e) {
     newInput.addEventListener('change', () => { if (newInput.files[0]) handleFile(newInput.files[0]); });
 }
 
-// ── Upload image to repo via GitHub API ──
-async function uploadImageToRepo(token, filename, base64Data) {
-    const path = `data/submissions/${filename}`;
-    const url = `https://api.github.com/repos/${REPO.owner}/${REPO.repo}/contents/${path}`;
-
-    // Check if file already exists (to get sha for update)
-    let sha = null;
-    try {
-        const existing = await fetch(url, { headers: ghHeaders(token) });
-        if (existing.ok) {
-            const data = await existing.json();
-            sha = data.sha;
-        }
-    } catch (e) { /* file doesn't exist, that's fine */ }
-
-    const body = {
-        message: `Upload garment image: ${filename}`,
-        content: base64Data
-    };
-    if (sha) body.sha = sha;
-
-    const resp = await fetch(url, {
-        method: 'PUT',
-        headers: { ...ghHeaders(token), 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-    });
-
-    if (!resp.ok) {
-        const err = await resp.json();
-        throw new Error(err.message || 'Failed to upload image');
-    }
-    return filename;
-}
-
-// ── Submit single return ──
+// ── Submit single return via Vercel API ──
 async function submitReturn() {
-    const token = document.getElementById('ghToken').value.trim();
     const customer = document.getElementById('customerName').value.trim();
     const itemType = document.getElementById('itemType').value;
     const purchaseDate = document.getElementById('purchaseDate').value;
     const hygiene = document.getElementById('hygieneFlag').value;
     const finalSale = document.getElementById('finalSale').value;
 
-    if (!token) { setStatus('Please enter your GitHub token.', 'error'); return; }
-    if (!REPO.owner || !REPO.repo) { setStatus('Could not detect repo. Are you on GitHub Pages?', 'error'); return; }
-    if (!customer || !itemType || !purchaseDate) { setStatus('Please fill in Customer Name, Item Type, and Purchase Date.', 'error'); return; }
-    if (!selectedFile) { setStatus('Please upload a garment image.', 'error'); return; }
+    if (!customer || !itemType || !purchaseDate) { 
+        setStatus('Please fill in Customer Name, Item Type, and Purchase Date.', 'error'); 
+        return; 
+    }
+    if (!selectedFile) { 
+        setStatus('Please upload a garment image.', 'error'); 
+        return; 
+    }
 
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
     btn.textContent = 'Submitting...';
 
     try {
-        // Step 1: Upload image to repo
-        const ts = Date.now();
-        const ext = selectedFile.name.split('.').pop();
-        const safeItem = itemType.toLowerCase().replace(/[^a-z0-9]/g, '_');
-        const imageFilename = `${safeItem}_${ts}.${ext}`;
-
-        setStatus('Uploading image to repository...', 'info');
-        await uploadImageToRepo(token, imageFilename, selectedFileBase64);
-
-        // Step 2: Trigger workflow with inputs
-        setStatus('Triggering pipeline...', 'info');
-        const resp = await fetch(`https://api.github.com/repos/${REPO.owner}/${REPO.repo}/actions/workflows/pipeline.yml/dispatches`, {
+        setStatus('Processing request via Vercel API...', 'info');
+        
+        const response = await fetch('/api/submit', {
             method: 'POST',
-            headers: { ...ghHeaders(token), 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                ref: 'main',
-                inputs: {
-                    mode: 'single',
-                    customer_name: customer,
-                    item_type: itemType,
-                    purchase_date: purchaseDate,
-                    hygiene_item: hygiene,
-                    final_sale: finalSale,
-                    image_filename: imageFilename
-                }
+                customer_name: customer,
+                item_type: itemType,
+                purchase_date: purchaseDate,
+                hygiene_item: hygiene,
+                final_sale: finalSale,
+                image_base64: selectedFileBase64,
+                image_name: selectedFile.name
             })
         });
 
-        if (resp.status === 204) {
+        const result = await response.json();
+
+        if (response.ok) {
             setStatus('Submitted! Pipeline is running... polling for results (this may take 1-2 minutes).', 'running');
-            pollForResult(token);
+            pollForResult();
+        } else {
+            setStatus(`Error: ${result.error || 'Failed to trigger pipeline'}`, 'error');
+        }
+    } catch (e) {
+        setStatus(`Network Error: ${e.message}`, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Submit Return';
+    }
+}
+
+// ── Run batch pipeline (still requires token or can be moved to API) ──
+async function runBatchPipeline() {
+    const token = prompt("Enter GitHub Token to run batch pipeline (or leave empty if repo is public and workflow is dispatchable):");
+    if (!token && !confirm("No token provided. This might fail if the repository requires authentication for workflow dispatch. Continue?")) return;
+
+    setStatus('Triggering batch pipeline...', 'info');
+    try {
+        const resp = await fetch(`https://api.github.com/repos/${REPO.owner}/${REPO.repo}/actions/workflows/pipeline.yml/dispatches`, {
+            method: 'POST',
+            headers: { ...ghHeaders(token), 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ref: 'main', inputs: { mode: 'batch' } })
+        });
+
+        if (resp.status === 204) {
+            setStatus('Batch pipeline triggered! Refreshing results in 60s...', 'running');
+            setTimeout(loadResults, 60000);
         } else {
             const err = await resp.json();
-            setStatus(`Failed to trigger pipeline: ${err.message || resp.statusText}`, 'error');
+            setStatus(`Failed: ${err.message}`, 'error');
         }
     } catch (e) {
         setStatus(`Error: ${e.message}`, 'error');
     }
-
-    btn.disabled = false;
-    btn.textContent = 'Submit Return';
 }
 
 // ── Poll for single submission result ──
-async function pollForResult(token) {
+async function pollForResult() {
     for (let i = 0; i < 30; i++) {
         await new Promise(r => setTimeout(r, 10000));
         try {
             const resp = await fetch(`https://api.github.com/repos/${REPO.owner}/${REPO.repo}/actions/runs?per_page=1`, {
-                headers: ghHeaders(token)
+                headers: ghHeaders() // No token needed for public repo
             });
             const data = await resp.json();
             const run = data.workflow_runs?.[0];
@@ -465,7 +446,7 @@ async function pollForResult(token) {
                 if (run.conclusion === 'success') {
                     setStatus('Pipeline complete! Fetching result...', 'success');
                     await new Promise(r => setTimeout(r, 3000));
-                    await fetchSingleResult(token);
+                    await fetchSingleResult();
                     await loadResults();
                 } else {
                     setStatus(`Pipeline finished with status: ${run.conclusion}. Check the Actions tab.`, 'error');
@@ -478,7 +459,7 @@ async function pollForResult(token) {
     setStatus('Polling timed out. Check GitHub Actions tab.', 'error');
 }
 
-async function fetchSingleResult(token) {
+async function fetchSingleResult() {
     try {
         const url = `https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/main/docs/latest_submission.json`;
         const resp = await fetch(url + '?t=' + Date.now());
