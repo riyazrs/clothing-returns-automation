@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-04-30T17:22:40.172723Z",
+  "order_id": "ORD-1012",
+  "customer_name": "Sean Kelly",
+  "item_type": "Jeans",
+  "purchase_date": "2026-04-30",
+  "rpa_status": "ELIGIBLE FOR AI INSPECTION",
+  "rpa_note": "Purchase was 0 days ago - within return window",
+  "ai_decision": "REJECT",
+  "ai_defect": "tear",
+  "ai_confidence": 0.95,
+  "ai_reasoning": "The jeans display multiple large intentional-looking rips, holes, and frayed tears across both legs, along with what appears to be paint-like staining, making this item unsuitable for approval regardless of potential designer distressing intent.",
+  "image_path": "submissions/jeans_1777569741.png"
+}
