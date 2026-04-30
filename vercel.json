@@ -2,8 +2,12 @@
   "framework": null,
   "rewrites": [
     {
-      "source": "/((?!api/).*)",
-      "destination": "/docs/$1"
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/docs/:path*"
     }
   ]
 }
