@@ -312,17 +312,7 @@
 
 <script>
 // ── Repo detection ──
-function getRepoInfo() {
-    const host = window.location.hostname;
-    const path = window.location.pathname;
-    if (host.endsWith('.github.io')) {
-        const owner = host.replace('.github.io', '');
-        const repo = path.split('/').filter(Boolean)[0] || '';
-        return { owner, repo };
-    }
-    return { owner: '', repo: '' };
-}
-const REPO = getRepoInfo();
+const REPO = { owner: 'riyazrs', repo: 'clothing-returns-automation' };
 
 function ghHeaders(token) {
     const headers = { 'Accept': 'application/vnd.github.v3+json' };
