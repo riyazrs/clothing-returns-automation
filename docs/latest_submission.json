@@ -1,14 +1,14 @@
 {
-  "timestamp": "2026-04-30T23:21:46.688340Z",
-  "order_id": "ORD-1014",
-  "customer_name": "Sean",
+  "timestamp": "2026-05-01T00:00:54.643041Z",
+  "order_id": "ORD-1015",
+  "customer_name": "SALLEY KELLY",
   "item_type": "Jeans",
   "purchase_date": "2026-04-30",
   "rpa_status": "ELIGIBLE FOR AI INSPECTION",
-  "rpa_note": "Purchase was 0 days ago - within return window",
+  "rpa_note": "Purchase was 1 days ago - within return window",
   "ai_decision": "REJECT",
   "ai_defect": "tear",
   "ai_confidence": 0.95,
-  "ai_reasoning": "The jeans exhibit multiple large intentional-style rips, holes, and frayed fabric tears across both legs, along with visible paint-like staining/discolouration throughout the fabric.",
-  "image_path": "submissions/jeans_1777591290.png"
+  "ai_reasoning": "The jeans display multiple large intentional-style rips and tears across both legs, along with paint-like splatter marks and heavily distressed fabric throughout the garment.",
+  "image_path": "submissions/jeans_1777593634.png"
 }
